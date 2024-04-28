@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:tadrebk/about_us_screen/about_us_screen.dart';
+import 'package:tadrebk/contact%20_us/contact_us_screen.dart';
 import 'package:tadrebk/home_screen/home_page.dart';
 import 'package:tadrebk/profile/profile.dart';
 import 'package:tadrebk/shared/cach_helper.dart';
@@ -139,12 +141,10 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                     Marketing = count;
                                   } else if (category == 'Accounting'){
                                     Accounting = count;
-                                  } else if (category == 'communications'){
+                                  } else if (category == 'communications')
+                                  {
                                     communications = count;
                                   }
-
-
-
 
                                 });
 
@@ -161,15 +161,9 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                    );
                                  });
 
-
-
-
-
-
-
                             },
                             child: Text(
-                              'Courses',
+                              'Training',
                               style: TextStyle(
                                 fontSize: widget.index == 1 ? 24 : 16,
                                 color: widget.index == 1 ? mainColor : mainColor.withOpacity(0.5),
@@ -182,11 +176,11 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                         Expanded(
                           child: InkWell(
                             onTap: (){
-                              //
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(builder: (context) => contactUs()),
-                              //        );
+
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => ContactUsScreen()),
+                                     );
                             },
                             child: Text(
                               'Contact Us',
@@ -202,10 +196,10 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                         Expanded(
                           child: InkWell(
                             onTap: (){
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(builder: (context) => aboutUs()),
-                              //        );
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => AboutUsScreen()),
+                                     );
                             },
                             child: Text(
                               'About Us',

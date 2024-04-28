@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:tadrebk/add_training/post.dart';
 import 'package:tadrebk/profile/profile.dart';
 import 'package:tadrebk/shared/cach_helper.dart';
 import 'package:tadrebk/shared/colors.dart';
@@ -12,6 +13,7 @@ import 'package:tadrebk/sign_up_screen/sign_up.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
+import '../get_trainings/get _trainings_page.dart';
 import '../login_screen/login.dart';
 import '../profile/cubit.dart';
 import '../profile/states.dart';
@@ -121,59 +123,58 @@ void initState() {
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Container(
-                                            width: MediaQuery.of(context).size.width *
-                                                0.08,
-                                            height:
-                                            MediaQuery.of(context).size.height *
-                                                0.2,
-                                            child: Card(
-                                              color: Colors.white,
-                                              child: Column(
-                                                children: [
-                                                  Expanded(
-                                                    flex: 3,
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.only(
-                                                          top: 8),
-                                                      child: Image.asset(
-                                                        'assets/images/img_10.png',
-                                                        width: MediaQuery.of(context)
-                                                            .size
-                                                            .width *
-                                                            0.04,
-                                                        height: MediaQuery.of(context)
-                                                            .size
-                                                            .height *
-                                                            0.1,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => const GetTrainings()),
+                                              );
+                                              print('تم النقر على الـ GetTrainings');
+                                              // يمكنك استبدال هذا الإجراء بأي شيء ترغب فيه
+                                            },
+                                            child: Container(
+                                              width: MediaQuery.of(context).size.width * 0.08,
+                                              height: MediaQuery.of(context).size.height * 0.2,
+                                              child: Card(
+                                                color: Colors.white,
+                                                child: Column(
+                                                  children: [
+                                                    Expanded(
+                                                      flex: 3,
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.only(top: 8),
+                                                        child: Image.asset(
+                                                          'assets/images/img_10.png',
+                                                          width: MediaQuery.of(context).size.width * 0.04,
+                                                          height: MediaQuery.of(context).size.height * 0.1,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                  Text(
-                                                    '30000+',
-                                                    style: TextStyle(
-                                                      color: mainColor,
-                                                      fontFamily: 'Poppins',
-                                                    ),
-                                                  ),
-                                                  Spacer(),
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(
-                                                        bottom: 6),
-                                                    child: Text(
-                                                      'Training',
+                                                    Text(
+                                                      '30000+',
                                                       style: TextStyle(
+                                                        color: mainColor,
+                                                        fontFamily: 'Poppins',
+                                                      ),
+                                                    ),
+                                                    const Spacer(),
+                                                    const Padding(
+                                                      padding: EdgeInsets.only(bottom: 6),
+                                                      child: Text(
+                                                        'Training',
+                                                        style: TextStyle(
                                                           fontFamily: 'Poppins',
                                                           fontWeight: FontWeight.w600,
-                                                          fontSize: 12),
+                                                          fontSize: 12,
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        Padding(
+                                        ), Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Container(
                                             width: MediaQuery.of(context).size.width *
@@ -203,9 +204,9 @@ void initState() {
                                                       ),
                                                     ),
                                                   ),
-                                                  Spacer(),
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(
+                                                  const Spacer(),
+                                                  const Padding(
+                                                    padding: EdgeInsets.only(
                                                         bottom: 6),
                                                     child: Text(
                                                       'Certificate',
@@ -222,47 +223,47 @@ void initState() {
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Container(
-                                            width: MediaQuery.of(context).size.width *
-                                                0.08,
-                                            height:
-                                            MediaQuery.of(context).size.height *
-                                                0.2,
-                                            child: Card(
-                                              color: Colors.white,
-                                              child: Column(
-                                                children: [
-                                                  Expanded(
-                                                    flex: 3,
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.only(
-                                                          top: 8),
-                                                      child: Image.asset(
-                                                        'assets/images/img_7.png',
-                                                        width: MediaQuery.of(context)
-                                                            .size
-                                                            .width *
-                                                            0.04,
-                                                        height: MediaQuery.of(context)
-                                                            .size
-                                                            .height *
-                                                            0.1,
+                                          child: GestureDetector(
+                                            onTap: () {
+
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => const Post()),
+                                              );
+                                              print('تم النقر على الـ Post');
+                                            },
+                                            child: Container(
+                                              width: MediaQuery.of(context).size.width * 0.08,
+                                              height: MediaQuery.of(context).size.height * 0.2,
+                                              child: Card(
+                                                color: Colors.white,
+                                                child: Column(
+                                                  children: [
+                                                    Expanded(
+                                                      flex: 3,
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.only(top: 8),
+                                                        child: Image.asset(
+                                                          'assets/images/img_7.png',
+                                                          width: MediaQuery.of(context).size.width * 0.04,
+                                                          height: MediaQuery.of(context).size.height * 0.1,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                  Spacer(),
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(
-                                                        bottom: 6),
-                                                    child: Text(
-                                                      'Add Training',
-                                                      style: TextStyle(
+                                                    const Spacer(),
+                                                    const Padding(
+                                                      padding: EdgeInsets.only(bottom: 6),
+                                                      child: Text(
+                                                        'Add Training',
+                                                        style: TextStyle(
                                                           fontFamily: 'Poppins',
                                                           fontWeight: FontWeight.w600,
-                                                          fontSize: 12),
+                                                          fontSize: 12,
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -684,10 +685,6 @@ class TopClipper extends CustomClipper<Rect> {
     return false;
   }
 }
-
-
-
-
 
 
 Widget introComponents(

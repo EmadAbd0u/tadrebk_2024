@@ -4,13 +4,14 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:tadrebk/home_screen/home_page.dart';
 import 'package:tadrebk/shared/cach_helper.dart';
 import 'package:tadrebk/shared/colors.dart';
+import 'package:tadrebk/shared/components.dart';
+import 'package:tadrebk/shared/constant.dart';
 import 'package:tadrebk/sign_up_screen/state.dart';
 
 import '../login_screen/login.dart';
 import '../profile/cubit.dart';
-import '../shared/components.dart';
-import '../shared/constant.dart';
 import '../shared/fonts.dart';
+
 import 'cubit.dart';
 
 class SignUp extends StatefulWidget {
@@ -20,7 +21,7 @@ class SignUp extends StatefulWidget {
   State<SignUp> createState() => _SignUpState();
 }
 
-class _SignUpState extends State<SignUp>{
+class _SignUpState extends State<SignUp> {
   TextEditingController emailController = TextEditingController();
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
@@ -33,106 +34,94 @@ class _SignUpState extends State<SignUp>{
   TextEditingController specializationController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  bool isPerson = true ;
+  bool isPerson = true;
 
-
-
-
-
+  String? confirmPassword;
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RegisterCubit, RegisterStates>(
       listener: (context, state) {
-
-
-
-
-
-        if (state is RegisterCreateUserSuccessStates ) {
+        if (state is RegisterCreateUserSuccessStates) {
           cachHelper.saveData(key: 'uId', value: state.uId);
 
-
-            Navigator.pushAndRemoveUntil(context,
-                MaterialPageRoute(builder: (context) => const HomePage()), (route) => false);
-            cachHelper.saveData(key: 'type', value: 'person');
-
-
+          Navigator.pushAndRemoveUntil(context,
+              MaterialPageRoute(builder: (context) => const HomePage()), (
+                  route) => false);
+          cachHelper.saveData(key: 'type', value: 'person');
 
           typeInter = isPerson.toString();
 
-
-
           ProfileCubit.get(context).getUserData();
-          ProfileCubit.get(context).getCompanyData();
-
-
-
-
-
-        } else if (state is RegisterCreateCompanySuccessStates ){
+        } else if (state is RegisterCreateCompanySuccessStates) {
           cachHelper.saveData(key: 'uId', value: state.uId);
 
-        Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => const HomePage()), (route) => false);
-        cachHelper.saveData(key: 'type', value: 'company');
+          Navigator.pushAndRemoveUntil(context,
+              MaterialPageRoute(builder: (context) => const HomePage()), (
+                  route) => false);
+          cachHelper.saveData(key: 'type', value: 'company');
 
           typeInter = isPerson.toString();
 
-
-
           ProfileCubit.get(context).getUserData();
-
-
-
         }
-        else{
+        else {
           showToast(
               msg: 'check your network.',
               state: ToastStates.ERORR
           );
         }
-
-
-
-
-
-
-
-
-
-
       },
       builder: (context, state) {
         return Form(
           key: _formKey,
           child: Scaffold(
             body: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width,
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height,
               child: Row(
                 children: [
                   Image.asset(
-                    isPerson? 'assets/images/img_16.png' : 'assets/images/img_17.png' ,
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    height: MediaQuery.of(context).size.height,
+                    isPerson
+                        ? 'assets/images/img_16.png'
+                        : 'assets/images/img_17.png',
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.3,
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .height,
                     fit: BoxFit.cover,
-                  ) ,
+                  ),
                   SingleChildScrollView(
                     child: Container(
-                      width: MediaQuery.of(context).size.width * 0.7,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.7,
 
                       child: Column(
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(20),
                             child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center, // تحديد توجيه العناصر
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              // تحديد توجيه العناصر
                               children: [
                                 Expanded(
-                                  flex:2,
+                                  flex: 2,
                                   child: Text(
-                                    isPerson? 'Create Account as Person':'Create Account as Company',
+                                    isPerson
+                                        ? 'Create Account as Person'
+                                        : 'Create Account as Company',
                                     style: TextStyle(
                                       fontSize: 26,
                                       fontWeight: FontWeight.bold,
@@ -140,7 +129,7 @@ class _SignUpState extends State<SignUp>{
                                     ),
                                   ),
                                 ),
-                                Spacer(),
+                                const Spacer(),
                                 Text(
                                   'Already have an account?',
                                   style: TextStyle(
@@ -148,16 +137,25 @@ class _SignUpState extends State<SignUp>{
                                     fontFamily: mainFont,
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 8,
                                 ),
                                 InkWell(
-                                  onTap: (){
-                                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>Login()), (route) => false);
+                                  onTap: () {
+                                    Navigator.pushAndRemoveUntil(context,
+                                        MaterialPageRoute(builder: (
+                                            context) => const Login()), (
+                                            route) => false);
                                   },
                                   child: Container(
-                                    width: MediaQuery.of(context).size.width * 0.08,
-                                    height: MediaQuery.of(context).size.height * 0.05,
+                                    width: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width * 0.08,
+                                    height: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .height * 0.05,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
                                       border: Border.all(
@@ -182,7 +180,10 @@ class _SignUpState extends State<SignUp>{
                           ),
 
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.3,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.3,
 
                             child: Column(
                               children: [
@@ -204,16 +205,25 @@ class _SignUpState extends State<SignUp>{
                                             });
                                           },
                                           child: Container(
-                                            height: MediaQuery.of(context).size.height * 0.06,
+                                            height: MediaQuery
+                                                .of(context)
+                                                .size
+                                                .height * 0.06,
                                             decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.horizontal(left: Radius.circular(20)),
-                                              color: isPerson ? mainColor : Colors.white,
+                                              borderRadius: const BorderRadius
+                                                  .horizontal(
+                                                  left: Radius.circular(20)),
+                                              color: isPerson
+                                                  ? mainColor
+                                                  : Colors.white,
                                             ),
                                             child: Center(
                                               child: Text(
                                                 'Person',
                                                 style: TextStyle(
-                                                  color: isPerson ? Colors.white : Colors.black,
+                                                  color: isPerson
+                                                      ? Colors.white
+                                                      : Colors.black,
                                                   fontFamily: 'Poppins',
                                                   fontSize: 18,
                                                 ),
@@ -230,16 +240,27 @@ class _SignUpState extends State<SignUp>{
                                             });
                                           },
                                           child: Container(
-                                            height: MediaQuery.of(context).size.height * 0.06,
+                                            height: MediaQuery
+                                                .of(context)
+                                                .size
+                                                .height * 0.06,
                                             decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.horizontal(right: Radius.circular(20)),
-                                              color: isPerson ? Theme.of(context).scaffoldBackgroundColor : mainColor,
+                                              borderRadius: const BorderRadius
+                                                  .horizontal(
+                                                  right: Radius.circular(20)),
+                                              color: isPerson
+                                                  ? Theme
+                                                  .of(context)
+                                                  .scaffoldBackgroundColor
+                                                  : mainColor,
                                             ),
                                             child: Center(
                                               child: Text(
                                                 'Company',
                                                 style: TextStyle(
-                                                  color: isPerson ? Colors.black : Colors.white,
+                                                  color: isPerson
+                                                      ? Colors.black
+                                                      : Colors.white,
                                                   fontFamily: 'Poppins',
                                                   fontSize: 18,
                                                 ),
@@ -254,12 +275,16 @@ class _SignUpState extends State<SignUp>{
 
                                 SizedBox(
 
-                                  height: MediaQuery.of(context).size.height*0.05,
+                                  height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * 0.05,
                                 ),
-                               isPerson? Row(
+                                isPerson ? Row(
                                   children: [
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .start,
                                       children: [
                                         Text('First Name*',
                                           style: TextStyle(
@@ -268,17 +293,24 @@ class _SignUpState extends State<SignUp>{
                                               color: Colors.grey
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 4,
                                         ),
                                         SizedBox(
-                                          width: MediaQuery.of(context).size.width * 0.14,
-                                          height: MediaQuery.of(context).size.height*0.06,
+                                          width: MediaQuery
+                                              .of(context)
+                                              .size
+                                              .width * 0.14,
+                                          height: MediaQuery
+                                              .of(context)
+                                              .size
+                                              .height * 0.06,
                                           child: TextFormField(
                                             keyboardType: TextInputType.name,
                                             controller: firstNameController,
                                             validator: (value) {
-                                              if (value == null || value.isEmpty) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
                                                 return 'this field is empty';
                                               }
                                             },
@@ -287,30 +319,40 @@ class _SignUpState extends State<SignUp>{
                                               fillColor: Colors.white,
                                               hintText: 'Name',
 
-                                              hintStyle: TextStyle(color: Colors.grey,fontSize: 14),
+                                              hintStyle: const TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 14),
                                               focusColor: Colors.white,
                                               focusedBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                                borderRadius: const BorderRadius
+                                                    .all(Radius.circular(10)),
                                                 borderSide: BorderSide(
-                                                  color: Colors.grey.withOpacity(0.5),
+                                                  color: Colors.grey
+                                                      .withOpacity(0.5),
                                                 ),
                                               ),
                                               focusedErrorBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                                borderRadius: const BorderRadius
+                                                    .all(Radius.circular(10)),
                                                 borderSide: BorderSide(
-                                                  color: Colors.grey.withOpacity(0.5),
+                                                  color: Colors.grey
+                                                      .withOpacity(0.5),
                                                 ),
                                               ),
                                               disabledBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                                borderRadius: const BorderRadius
+                                                    .all(Radius.circular(10)),
                                                 borderSide: BorderSide(
-                                                  color: Colors.grey.withOpacity(0.5),
+                                                  color: Colors.grey
+                                                      .withOpacity(0.5),
                                                 ),
                                               ),
                                               enabledBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                                borderRadius: const BorderRadius
+                                                    .all(Radius.circular(10)),
                                                 borderSide: BorderSide(
-                                                  color: Colors.grey.withOpacity(0.5),
+                                                  color: Colors.grey
+                                                      .withOpacity(0.5),
                                                 ),
                                               ),
 
@@ -319,9 +361,10 @@ class _SignUpState extends State<SignUp>{
                                         ),
                                       ],
                                     ),
-                                    Spacer(),
+                                    const Spacer(),
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .start,
                                       children: [
                                         Text('Last Name*',
                                           style: TextStyle(
@@ -330,17 +373,24 @@ class _SignUpState extends State<SignUp>{
                                               color: Colors.grey
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 4,
                                         ),
                                         SizedBox(
-                                          width: MediaQuery.of(context).size.width * 0.14,
-                                          height: MediaQuery.of(context).size.height*0.06,
+                                          width: MediaQuery
+                                              .of(context)
+                                              .size
+                                              .width * 0.14,
+                                          height: MediaQuery
+                                              .of(context)
+                                              .size
+                                              .height * 0.06,
                                           child: TextFormField(
                                             keyboardType: TextInputType.name,
                                             controller: lastNameController,
                                             validator: (value) {
-                                              if (value == null || value.isEmpty) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
                                                 return 'this field is empty';
                                               }
                                             },
@@ -349,30 +399,40 @@ class _SignUpState extends State<SignUp>{
                                               fillColor: Colors.white,
                                               hintText: 'Last Name',
 
-                                              hintStyle: TextStyle(color: Colors.grey,fontSize: 14),
+                                              hintStyle: const TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 14),
                                               focusColor: Colors.white,
                                               focusedBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                                borderRadius: const BorderRadius
+                                                    .all(Radius.circular(10)),
                                                 borderSide: BorderSide(
-                                                  color: Colors.grey.withOpacity(0.5),
+                                                  color: Colors.grey
+                                                      .withOpacity(0.5),
                                                 ),
                                               ),
                                               focusedErrorBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                                borderRadius: const BorderRadius
+                                                    .all(Radius.circular(10)),
                                                 borderSide: BorderSide(
-                                                  color: Colors.grey.withOpacity(0.5),
+                                                  color: Colors.grey
+                                                      .withOpacity(0.5),
                                                 ),
                                               ),
                                               disabledBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                                borderRadius: const BorderRadius
+                                                    .all(Radius.circular(10)),
                                                 borderSide: BorderSide(
-                                                  color: Colors.grey.withOpacity(0.5),
+                                                  color: Colors.grey
+                                                      .withOpacity(0.5),
                                                 ),
                                               ),
                                               enabledBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                                borderRadius: const BorderRadius
+                                                    .all(Radius.circular(10)),
                                                 borderSide: BorderSide(
-                                                  color: Colors.grey.withOpacity(0.5),
+                                                  color: Colors.grey
+                                                      .withOpacity(0.5),
                                                 ),
                                               ),
 
@@ -384,68 +444,86 @@ class _SignUpState extends State<SignUp>{
 
                                   ],
                                 ) : Column(
-                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                 children: [
-                                   Text('Company Name*',
-                                     style: TextStyle(
-                                         fontSize: 12,
-                                         fontFamily: mainFont,
-                                         color: Colors.grey
-                                     ),
-                                   ),
-                                   SizedBox(
-                                     height: 4,
-                                   ),
-                                   SizedBox(
-                                     width: MediaQuery.of(context).size.width * 0.3,
-                                     height: MediaQuery.of(context).size.height*0.06,
-                                     child: TextFormField(
-                                       keyboardType: TextInputType.name,
-                                       controller: companyNameController,
-                                       validator: (value) {
-                                         if (value == null || value.isEmpty) {
-                                           return 'this field is empty';
-                                         }
-                                       },
-                                       decoration: InputDecoration(
-                                         filled: true,
-                                         fillColor: Colors.white,
-                                         hintText: 'Enter Name Of Company',
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Company Name*',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontFamily: mainFont,
+                                          color: Colors.grey
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 4,
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width * 0.3,
+                                      height: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .height * 0.06,
+                                      child: TextFormField(
+                                        keyboardType: TextInputType.name,
+                                        controller: companyNameController,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'this field is empty';
+                                          }
+                                        },
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          hintText: 'Enter Name Of Company',
 
-                                         hintStyle: TextStyle(color: Colors.grey,fontSize: 14),
-                                         focusColor: Colors.white,
-                                         focusedBorder: OutlineInputBorder(
-                                           borderRadius: BorderRadius.all(Radius.circular(10)),
-                                           borderSide: BorderSide(
-                                             color: Colors.grey.withOpacity(0.5),
-                                           ),
-                                         ),
-                                         focusedErrorBorder: OutlineInputBorder(
-                                           borderRadius: BorderRadius.all(Radius.circular(10)),
-                                           borderSide: BorderSide(
-                                             color: Colors.grey.withOpacity(0.5),
-                                           ),
-                                         ),
-                                         disabledBorder: OutlineInputBorder(
-                                           borderRadius: BorderRadius.all(Radius.circular(10)),
-                                           borderSide: BorderSide(
-                                             color: Colors.grey.withOpacity(0.5),
-                                           ),
-                                         ),
-                                         enabledBorder: OutlineInputBorder(
-                                           borderRadius: BorderRadius.all(Radius.circular(10)),
-                                           borderSide: BorderSide(
-                                             color: Colors.grey.withOpacity(0.5),
-                                           ),
-                                         ),
+                                          hintStyle: const TextStyle(
+                                              color: Colors.grey, fontSize: 14),
+                                          focusColor: Colors.white,
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
+                                            borderSide: BorderSide(
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
+                                            ),
+                                          ),
+                                          focusedErrorBorder: OutlineInputBorder(
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
+                                            borderSide: BorderSide(
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
+                                            ),
+                                          ),
+                                          disabledBorder: OutlineInputBorder(
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
+                                            borderSide: BorderSide(
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
+                                            ),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
+                                            borderSide: BorderSide(
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
+                                            ),
+                                          ),
 
-                                       ),
-                                     ),
-                                   ),
-                                 ],
-                               ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                                 SizedBox(
-                                  height: MediaQuery.of(context).size.height*0.02,
+                                  height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * 0.02,
                                 ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -457,14 +535,21 @@ class _SignUpState extends State<SignUp>{
                                           color: Colors.grey
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 4,
                                     ),
                                     SizedBox(
-                                      width: MediaQuery.of(context).size.width * 0.3,
-                                      height: MediaQuery.of(context).size.height*0.06,
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width * 0.3,
+                                      height: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .height * 0.06,
                                       child: TextFormField(
-                                        keyboardType: TextInputType.emailAddress,
+                                        keyboardType: TextInputType
+                                            .emailAddress,
                                         controller: emailController,
                                         validator: (value) {
                                           if (value == null || value.isEmpty) {
@@ -476,30 +561,39 @@ class _SignUpState extends State<SignUp>{
                                           fillColor: Colors.white,
                                           hintText: 'Name@gmail.com',
 
-                                          hintStyle: TextStyle(color: Colors.grey,fontSize: 14),
+                                          hintStyle: const TextStyle(
+                                              color: Colors.grey, fontSize: 14),
                                           focusColor: Colors.white,
                                           focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
                                             borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
                                             ),
                                           ),
                                           focusedErrorBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
                                             borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
                                             ),
                                           ),
                                           disabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
                                             borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
                                             ),
                                           ),
                                           enabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
                                             borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
                                             ),
                                           ),
 
@@ -509,7 +603,10 @@ class _SignUpState extends State<SignUp>{
                                   ],
                                 ),
                                 SizedBox(
-                                  height: MediaQuery.of(context).size.height*0.02,
+                                  height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * 0.02,
                                 ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -521,141 +618,111 @@ class _SignUpState extends State<SignUp>{
                                           color: Colors.grey
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 4,
                                     ),
                                     SizedBox(
-                                      width: MediaQuery.of(context).size.width * 0.3,
-                                      height: MediaQuery.of(context).size.height*0.06,
-                                      child: TextFormField(
-                                        keyboardType: TextInputType.visiblePassword,
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width * 0.3,
+                                      height: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .height * 0.06,
+                                      child: defaultFormField(
+                                        context: context,
                                         controller: passwordController,
-                                        obscureText: RegisterCubit.get(context).isNotVisible,
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'this field is empty';
-                                          }
+                                        type: TextInputType.visiblePassword,
+                                        validate: defaultFormFieldValidator
+                                            .password,
+                                        // استخدام الوظيفة للتحقق من صحة كلمة المرور
+                                        hintText: 'Enter your password',
+                                        prefix: Icons.lock,
+                                        suffix: RegisterCubit
+                                            .get(context)
+                                            .suffix,
+                                        obscureText: RegisterCubit
+                                            .get(context)
+                                            .isNotVisible,
+                                        suffixPressed: () {
+                                          RegisterCubit.get(context)
+                                              .changePasswordVisibility();
                                         },
-                                        decoration: InputDecoration(
-                                          filled: true,
-                                          fillColor: Colors.white,
-
-                                          hintText: 'Enter Your Password',
-
-                                          hintStyle: TextStyle(color: Colors.grey,fontSize: 14),
-                                          focusColor: Colors.white,
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                                            borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
-                                            ),
-                                          ),
-                                          focusedErrorBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                                            borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
-                                            ),
-                                          ),
-                                          disabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                                            borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
-                                            ),
-                                          ),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                                            borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
-                                            ),
-                                          ),
-                                          suffixIcon: InkWell(
-                                              onTap: (){
-                                                RegisterCubit.get(context)
-                                                    .changePasswordVisibility();
-                                              },
-                                              child: Icon(RegisterCubit.get(context).suffix,color: Colors.grey,size: 16,)),
-
-                                        ),
                                       ),
-                                    ),
+                                    )
+
+
                                   ],
                                 ),
                                 SizedBox(
-                                  height: MediaQuery.of(context).size.height*0.02,
+                                  height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * 0.02,
                                 ),
                                 Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Confirm Password*',
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontFamily: mainFont,
-                                          color: Colors.grey
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 4,
-                                    ),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width * 0.3,
-                                      height: MediaQuery.of(context).size.height*0.06,
-                                      child: TextFormField(
-                                        keyboardType: TextInputType.visiblePassword,
-                                        controller: confirmPasswordController,
-                                        obscureText: RegisterCubit.get(context).isNotVisible,
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'this field is empty';
-                                          }
-                                        },
-                                        decoration: InputDecoration(
-                                          filled: true,
-                                          fillColor: Colors.white,
-                                          hintText: 'password',
-
-                                          hintStyle: TextStyle(color: Colors.grey,fontSize: 14),
-                                          focusColor: Colors.white,
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                                            borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
-                                            ),
-                                          ),
-                                          focusedErrorBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                                            borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
-                                            ),
-                                          ),
-                                          disabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                                            borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
-                                            ),
-                                          ),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                                            borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
-                                            ),
-                                          ),
-                                          suffixIcon: InkWell(
-                                              onTap: (){
-                                                RegisterCubit.get(context)
-                                                    .changePasswordVisibility();
-                                              },
-                                              child: Icon(RegisterCubit.get(context).suffix,color: Colors.grey,size: 16,)),
-
-
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
+                                    children: [
+                                      Text('Confirm Password*',
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontFamily: mainFont,
+                                            color: Colors.grey
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                      const SizedBox(
+                                        height: 4,
+                                      ),
+                                      SizedBox(
+                                        width: MediaQuery
+                                            .of(context)
+                                            .size
+                                            .width * 0.3,
+                                        height: MediaQuery
+                                            .of(context)
+                                            .size
+                                            .height * 0.06,
+                                        child: defaultFormField(
+                                          context: context,
+                                          controller: confirmPasswordController,
+                                          type: TextInputType.visiblePassword,
+                                          validate: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'This field is empty';
+                                            }
+                                            if (value !=
+                                                passwordController.text) {
+                                              return 'Passwords do not match';
+                                            }
+                                            return null;
+                                          },
+                                          hintText: 'Confirm your password',
+                                          prefix: Icons.lock,
+                                          obscureText: RegisterCubit
+                                              .get(context)
+                                              .isNotVisible,
+                                          suffix: RegisterCubit
+                                              .get(context)
+                                              .suffix,
+                                          suffixPressed: () {
+                                            RegisterCubit.get(context)
+                                                .changePasswordVisibility();
+                                          },
+                                        ),
+
+                                      ),
+                                    ]
                                 ),
                                 SizedBox(
-                                  height: MediaQuery.of(context).size.height*0.02,
+                                  height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * 0.02,
                                 ),
-                               isPerson? Container() : Column(
+                                isPerson ? Container() : Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text('Specialization*',
@@ -665,12 +732,18 @@ class _SignUpState extends State<SignUp>{
                                           color: Colors.grey
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 4,
                                     ),
                                     SizedBox(
-                                      width: MediaQuery.of(context).size.width * 0.3,
-                                      height: MediaQuery.of(context).size.height*0.06,
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width * 0.3,
+                                      height: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .height * 0.06,
                                       child: TextFormField(
                                         keyboardType: TextInputType.text,
                                         controller: specializationController,
@@ -684,30 +757,39 @@ class _SignUpState extends State<SignUp>{
                                           fillColor: Colors.white,
                                           hintText: 'Enter Specialization Of Company',
 
-                                          hintStyle: TextStyle(color: Colors.grey,fontSize: 14),
+                                          hintStyle: const TextStyle(
+                                              color: Colors.grey, fontSize: 14),
                                           focusColor: Colors.white,
                                           focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
                                             borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
                                             ),
                                           ),
                                           focusedErrorBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
                                             borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
                                             ),
                                           ),
                                           disabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
                                             borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
                                             ),
                                           ),
                                           enabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
                                             borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
                                             ),
                                           ),
 
@@ -716,8 +798,11 @@ class _SignUpState extends State<SignUp>{
                                     ),
                                   ],
                                 ),
-                                isPerson? SizedBox():SizedBox(
-                                  height: MediaQuery.of(context).size.height*0.02,
+                                isPerson ? const SizedBox() : SizedBox(
+                                  height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * 0.02,
                                 ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -729,12 +814,18 @@ class _SignUpState extends State<SignUp>{
                                           color: Colors.grey
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 4,
                                     ),
                                     SizedBox(
-                                      width: MediaQuery.of(context).size.width * 0.3,
-                                      height: MediaQuery.of(context).size.height*0.06,
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width * 0.3,
+                                      height: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .height * 0.06,
                                       child: TextFormField(
                                         keyboardType: TextInputType.phone,
                                         controller: phoneNumberController,
@@ -748,30 +839,39 @@ class _SignUpState extends State<SignUp>{
                                           fillColor: Colors.white,
                                           hintText: 'Enter Your Phone Number',
 
-                                          hintStyle: TextStyle(color: Colors.grey,fontSize: 14),
+                                          hintStyle: const TextStyle(
+                                              color: Colors.grey, fontSize: 14),
                                           focusColor: Colors.white,
                                           focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
                                             borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
                                             ),
                                           ),
                                           focusedErrorBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
                                             borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
                                             ),
                                           ),
                                           disabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
                                             borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
                                             ),
                                           ),
                                           enabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
                                             borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
                                             ),
                                           ),
 
@@ -781,7 +881,10 @@ class _SignUpState extends State<SignUp>{
                                   ],
                                 ),
                                 SizedBox(
-                                  height: MediaQuery.of(context).size.height*0.02,
+                                  height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * 0.02,
                                 ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -793,12 +896,18 @@ class _SignUpState extends State<SignUp>{
                                           color: Colors.grey
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 4,
                                     ),
                                     SizedBox(
-                                      width: MediaQuery.of(context).size.width * 0.3,
-                                      height: MediaQuery.of(context).size.height*0.06,
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width * 0.3,
+                                      height: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .height * 0.06,
                                       child: TextFormField(
                                         keyboardType: TextInputType.name,
                                         controller: cityController,
@@ -812,30 +921,39 @@ class _SignUpState extends State<SignUp>{
                                           fillColor: Colors.white,
                                           hintText: 'Enter Your City Name',
 
-                                          hintStyle: TextStyle(color: Colors.grey,fontSize: 14),
+                                          hintStyle: const TextStyle(
+                                              color: Colors.grey, fontSize: 14),
                                           focusColor: Colors.white,
                                           focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
                                             borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
                                             ),
                                           ),
                                           focusedErrorBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
                                             borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
                                             ),
                                           ),
                                           disabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
                                             borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
                                             ),
                                           ),
                                           enabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
                                             borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
                                             ),
                                           ),
 
@@ -845,7 +963,10 @@ class _SignUpState extends State<SignUp>{
                                   ],
                                 ),
                                 SizedBox(
-                                  height: MediaQuery.of(context).size.height*0.02,
+                                  height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * 0.02,
                                 ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -857,14 +978,21 @@ class _SignUpState extends State<SignUp>{
                                           color: Colors.grey
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 4,
                                     ),
                                     SizedBox(
-                                      width: MediaQuery.of(context).size.width * 0.3,
-                                      height: MediaQuery.of(context).size.height*0.06,
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width * 0.3,
+                                      height: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .height * 0.06,
                                       child: TextFormField(
-                                        keyboardType: TextInputType.streetAddress,
+                                        keyboardType: TextInputType
+                                            .streetAddress,
                                         controller: streetController,
                                         validator: (value) {
                                           if (value == null || value.isEmpty) {
@@ -876,30 +1004,39 @@ class _SignUpState extends State<SignUp>{
                                           fillColor: Colors.white,
                                           hintText: 'Street Name or Number',
 
-                                          hintStyle: TextStyle(color: Colors.grey,fontSize: 14),
+                                          hintStyle: const TextStyle(
+                                              color: Colors.grey, fontSize: 14),
                                           focusColor: Colors.white,
                                           focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
                                             borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
                                             ),
                                           ),
                                           focusedErrorBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
                                             borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
                                             ),
                                           ),
                                           disabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
                                             borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
                                             ),
                                           ),
                                           enabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            borderRadius: const BorderRadius
+                                                .all(Radius.circular(10)),
                                             borderSide: BorderSide(
-                                              color: Colors.grey.withOpacity(0.5),
+                                              color: Colors.grey.withOpacity(
+                                                  0.5),
                                             ),
                                           ),
 
@@ -910,62 +1047,76 @@ class _SignUpState extends State<SignUp>{
                                 ),
 
                                 SizedBox(
-                                  height: MediaQuery.of(context).size.height*0.05,
+                                  height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * 0.05,
                                 ),
                                 InkWell(
-                                  onTap: (){
-                               if (_formKey.currentState!.validate()) {
-                                 if (passwordController.text ==
-                                     confirmPasswordController.text) {
-                                   if (isPerson) {
-                                     RegisterCubit.get(context).userRegister(
-                                         firstName: firstNameController.text,
-                                         lastName: lastNameController.text,
-                                         email: emailController.text,
-                                         password: passwordController.text,
-                                         phoneNumber: phoneNumberController
-                                             .text,
-                                         city: cityController.text,
-                                         street: streetController.text,
-                                         context: context,
-                                         isPerson: isPerson.toString()
-                                     );
-                                   }
-                                   else {
-                                     RegisterCubit.get(context).companyRegister(
-                                         name: companyNameController.text,
-                                         specialization: specializationController
-                                             .text,
-                                         email: emailController.text,
-                                         password: passwordController.text,
-                                         phoneNumber: phoneNumberController
-                                             .text,
-                                         city: cityController.text,
-                                         street: streetController.text,
-                                         context: context,
-                                         isPerson: isPerson.toString()
-                                     );
-                                   }
-                                 }
-                                 else {
-                                   print("not compatible password");
-                                 }
-                               }
-
+                                  onTap: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      if (passwordController.text ==
+                                          confirmPasswordController.text) {
+                                        if (isPerson) {
+                                          RegisterCubit.get(context)
+                                              .userRegister(
+                                              firstName: firstNameController
+                                                  .text,
+                                              lastName: lastNameController.text,
+                                              email: emailController.text,
+                                              password: passwordController.text,
+                                              phoneNumber: phoneNumberController
+                                                  .text,
+                                              city: cityController.text,
+                                              street: streetController.text,
+                                              context: context,
+                                              isPerson: isPerson.toString()
+                                          );
+                                        }
+                                        else {
+                                          RegisterCubit.get(context)
+                                              .companyRegister(
+                                              name: companyNameController.text,
+                                              specialization: specializationController
+                                                  .text,
+                                              email: emailController.text,
+                                              password: passwordController.text,
+                                              phoneNumber: phoneNumberController
+                                                  .text,
+                                              city: cityController.text,
+                                              street: streetController.text,
+                                              context: context,
+                                              isPerson: isPerson.toString()
+                                          );
+                                        }
+                                      }
+                                      else {
+                                        print("not compatible password");
+                                      }
+                                    }
                                   },
                                   child: Container(
-                                    width: MediaQuery.of(context).size.width*0.3,
-                                    height: MediaQuery.of(context).size.width*0.03,
+                                    width: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width * 0.3,
+                                    height: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width * 0.03,
 
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
                                       gradient: LinearGradient(
                                         begin: Alignment.centerLeft,
                                         end: Alignment.centerRight,
-                                        colors: [HexColor('#1B3358'), mainColor],
+                                        colors: [
+                                          HexColor('#1B3358'),
+                                          mainColor
+                                        ],
                                       ),
                                     ),
-                                    child: Center(
+                                    child: const Center(
                                       child: Text('Sign Up',
                                         style: TextStyle(
                                             color: Colors.white,
@@ -977,7 +1128,10 @@ class _SignUpState extends State<SignUp>{
                                   ),
                                 ),
                                 SizedBox(
-                                  height: MediaQuery.of(context).size.height*0.1,
+                                  height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * 0.1,
                                 ),
                               ],
                             ),

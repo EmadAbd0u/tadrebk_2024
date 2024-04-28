@@ -403,7 +403,6 @@ Widget trainingID({
                         id:id,
                         isLiked: isLiked,
                         isPaid: isPaid,
-
                       );
                     }
                     ),
@@ -986,10 +985,146 @@ Color chooseToastColor(ToastStates test){
 
 
 
+///-----------------------------------
+
+class defaultFormFieldValidator {
+  static String? email(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your email';
+    }
+    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+      return 'Please enter a valid email';
+    }
+    return null;
+  }
+
+  static String? password(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your password';
+    }
+    if (value.length < 8) {
+      return 'Password must be at least 8 characters long';
+    }
+    if (!RegExp(r'^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$').hasMatch(value)) {
+      return 'Password must contain uppercase and lowercase letters, numbers, and special characters';
+    }
+    return null;
+  }
+
+  static String? confirmPassword(String? password, String? confirmPassword) {
+    if (password != confirmPassword) {
+      return 'Passwords do not match';
+    }
+    return null;
+  }
+
+  static String? name(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your name';
+    }
+    return null;
+  }
+
+  static String? phoneNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your phone number';
+    }
+    if (!RegExp(r'^01[0-9]{9}$').hasMatch(value)) {
+      return 'Please enter a valid Egyptian phone number';
+    }
+    return null;
+  }
+
+  static void showPasswordSnackbar(BuildContext context, String? errorMessage) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          errorMessage ?? 'Please enter a strong password',
+          style: TextStyle(color: errorMessage != null ? Colors.red : Colors.green),
+        ),
+      ),
+    );
+  }
+}
 
 
 
 
 
+///------------------------[defaultFormField/*----------------------------Start--
 
+Widget defaultFormField({
+  required BuildContext context,
+  required TextEditingController controller,
+  required TextInputType type,
+  Function? onSubmit,
+  Function? onChanged,
+  Function? onTap,
+  bool isPassword = false,
+  required String? Function(String?) validate,
+  required IconData prefix,
+  IconData? suffix,
+  Function? suffixPressed,
+  bool isClickable = true,
+  String? hintText,
+  required bool obscureText, // إضافة المعامل هنا
+}) =>
+    SizedBox(
+      width: MediaQuery.of(context).size.width * 0.3,
+      height: MediaQuery.of(context).size.height * 0.06,
+      child: TextFormField(
+        keyboardType: type,
+        controller: controller,
+        obscureText: obscureText, // استخدام المعامل هنا
+        onFieldSubmitted: onSubmit as void Function(String)?,
+        onChanged: onChanged as void Function(String)?,
+        enabled: isClickable,
+        onTap: onTap as void Function()?,
+        validator: validate,
+        decoration: InputDecoration(
+          prefixIcon: Icon(prefix),
+          hintText: hintText,
+          hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+          filled: true,
+          fillColor: Colors.white,
+          focusColor: Colors.white,
+          focusedBorder: OutlineInputBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            borderSide: BorderSide(
+              color: Colors.grey.withOpacity(0.5),
+            ),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            borderSide: BorderSide(
+              color: Colors.grey.withOpacity(0.5),
+            ),
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            borderSide: BorderSide(
+              color: Colors.grey.withOpacity(0.5),
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            borderSide: BorderSide(
+              color: Colors.grey.withOpacity(0.5),
+            ),
+          ),
+          suffixIcon: suffix != null
+              ? InkWell(
+            onTap: () {
+              suffixPressed?.call();
+            },
+            child: Icon(suffix, color: Colors.grey, size: 16),
+          )
+              : null,
+        ),
+      ),
+    );
+
+
+///------------------------[DefaultFormFieldValidator/*--------------------start--
+//-----------------------------------------------------------------------
 
