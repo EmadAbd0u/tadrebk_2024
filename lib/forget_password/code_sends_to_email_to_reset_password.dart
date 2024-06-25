@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:tadrebk/home_screen/home_page.dart';
 import 'package:tadrebk/login_screen/login.dart';
 
@@ -21,7 +22,11 @@ class _RestPasswordCodeState extends State<RestPasswordCode> {
   bool isCorrect = false;
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+
+    final windowWidth = MediaQuery.of(context).size.width;
+    final windowHeight = MediaQuery.of(context).size.height;
+
+    return windowWidth >=1100 && windowHeight >=600 ?  Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -36,7 +41,7 @@ class _RestPasswordCodeState extends State<RestPasswordCode> {
                 children: [
                   SizedBox(
                     width: MediaQuery.of(context).size.width*0.3,
-                    height: MediaQuery.of(context).size.height*0.44,
+                    height: MediaQuery.of(context).size.height*0.5,
 
                     child: Card(
                       color: Colors.white,
@@ -45,7 +50,7 @@ class _RestPasswordCodeState extends State<RestPasswordCode> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(left: 20,right: 20,top: 20,bottom: 10),
-                            child: Text('Enter security code',
+                            child: LocaleText('security_code',
 
                               style: TextStyle(
                                   fontFamily: mainFont
@@ -55,7 +60,7 @@ class _RestPasswordCodeState extends State<RestPasswordCode> {
                           ),
                          isCorrect == true ? Padding(
                             padding: const EdgeInsets.only(left: 20,right: 20,),
-                            child: Text('Not correct security code',
+                            child: LocaleText('not_correct_security_code',
 
                               style: TextStyle(
                                   fontFamily: mainFont,
@@ -75,7 +80,7 @@ class _RestPasswordCodeState extends State<RestPasswordCode> {
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  Text('Please check your emails for a message withe your code .your code is 6 numbers long',
+                                  LocaleText('check',
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontFamily: mainFont,
@@ -85,46 +90,43 @@ class _RestPasswordCodeState extends State<RestPasswordCode> {
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  SizedBox(
-                                    height: 40,
-                                    child: TextFormField(
-                                      keyboardType: TextInputType.number,
-                                      controller: TextEditingController(),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'this field is empty';
-                                        }
-                                      },
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        fillColor: Colors.transparent,
-                                        hintText: 'Enter code',
+                                  TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    controller: TextEditingController(),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'this field is empty';
+                                      }
+                                    },
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Colors.transparent,
+                                      hintText: 'Enter code',
 
-                                        hintStyle: TextStyle(color: Colors.grey,fontSize: 14),
-                                        focusColor: Colors.white,
-                                        focusedBorder: OutlineInputBorder(
+                                      hintStyle: TextStyle(color: Colors.grey,fontSize: 14),
+                                      focusColor: Colors.white,
+                                      focusedBorder: OutlineInputBorder(
 
-                                          borderSide: BorderSide(
-                                            color: Colors.grey,
-                                          ),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey,
                                         ),
-                                        focusedErrorBorder: OutlineInputBorder(
+                                      ),
+                                      focusedErrorBorder: OutlineInputBorder(
 
-                                          borderSide: BorderSide(
-                                            color:Colors.grey,
-                                          ),
+                                        borderSide: BorderSide(
+                                          color:Colors.grey,
                                         ),
-                                        disabledBorder: OutlineInputBorder(
+                                      ),
+                                      disabledBorder: OutlineInputBorder(
 
-                                          borderSide: BorderSide(
-                                            color: Colors.grey,
-                                          ),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey,
                                         ),
-                                        enabledBorder: OutlineInputBorder(
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
 
-                                          borderSide: BorderSide(
-                                            color: Colors.grey,
-                                          ),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey,
                                         ),
                                       ),
                                     ),
@@ -174,8 +176,8 @@ class _RestPasswordCodeState extends State<RestPasswordCode> {
                                     ),
 
                                     child: Center(
-                                      child: Text(
-                                        'Cancel',
+                                      child: LocaleText(
+                                        'cancel',
                                         style: TextStyle(
                                             fontFamily: mainFont,
                                             fontSize: 16
@@ -207,7 +209,7 @@ class _RestPasswordCodeState extends State<RestPasswordCode> {
                                     ),
 
                                     child: Center(
-                                      child: Text(
+                                      child: LocaleText(
                                         'continue',
                                         style: TextStyle(
                                             fontFamily: mainFont,
@@ -238,6 +240,6 @@ class _RestPasswordCodeState extends State<RestPasswordCode> {
           ],
         ),
       ),
-    );
+    ) : Container();
   }
 }

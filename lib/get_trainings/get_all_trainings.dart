@@ -1,6 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:tadrebk/get_trainings/get%20_trainings_page.dart';
 
 import '../shared/colors.dart';
 import '../shared/components.dart';
@@ -16,18 +18,31 @@ class GetAllTrainings extends StatefulWidget {
 }
 
 class _GetAllTrainingsState extends State<GetAllTrainings> {
-  String name = '';
+  String searchQuery = '';
+  final List<String> categories = [
+    'Programming',
+    'Engineering',
+    'Marketing',
+    'Accounting',
+    'Communication',
+    'Law',
+    'Arts',
+    'Business Management',
+    'Nursing',
+    'Others'
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    final windowWidth = MediaQuery.of(context).size.width;
+    final windowHeight = MediaQuery.of(context).size.height;
+
+    return windowWidth >= 1100 && windowHeight >= 600
+        ? Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
-            HeaderWidget(
-              index: 1,
-            ),
-
+            HeaderWidget(index: 1),
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -37,9 +52,10 @@ class _GetAllTrainingsState extends State<GetAllTrainings> {
                   child: Container(
                     height: MediaQuery.of(context).size.height * 0.08,
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          'All',
+                        LocaleText(
+                          'all',
                           style: TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.bold,
@@ -49,19 +65,20 @@ class _GetAllTrainingsState extends State<GetAllTrainings> {
                         SizedBox(
                           width: 6,
                         ),
-                        Text(
-                          'Training',
+                        LocaleText(
+                          'training',
                           style: TextStyle(
-                              fontSize: 26,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: mainFont,
-                              color: mainColor),
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: mainFont,
+                            color: mainColor,
+                          ),
                         ),
                         SizedBox(
                           width: 6,
                         ),
-                        Text(
-                          'Of',
+                        LocaleText(
+                          'of',
                           style: TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.bold,
@@ -71,8 +88,8 @@ class _GetAllTrainingsState extends State<GetAllTrainings> {
                         SizedBox(
                           width: 6,
                         ),
-                        Text(
-                          'Tadrebk',
+                        LocaleText(
+                          'tadrebk',
                           style: TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.bold,
@@ -83,184 +100,145 @@ class _GetAllTrainingsState extends State<GetAllTrainings> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 100,right: 100, top: 20,bottom: 40),
+                SizedBox(height: 20),
+                Container(
+                  height: 40,
+                  margin: EdgeInsets.symmetric(horizontal: 100),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey),
+                  ),
+                  child: TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        searchQuery = value;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                      hintText: 'Search for training name...',
+                      hintStyle: TextStyle(color: mainColor),
+                      border: InputBorder.none,
+                      suffixIcon: Icon(Icons.search),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
                   child: Container(
-                    height: MediaQuery.of(context).size.width * 0.08,
-                    width: MediaQuery.of(context).size.width ,
-                    decoration: BoxDecoration(
-                        color: HexColor('#B5C9E7'),
-                        borderRadius: BorderRadius.circular(5)
-                    ),
+                    color: Colors.blue.withOpacity(0.1),
+                    padding: EdgeInsets.symmetric(horizontal: 100, vertical: 10),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SizedBox(width: 80,),
-                        InkWell(
-                            onTap: (){
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context){
-                                    return CategoryPages(categoryName: 'Programming',);
-                                  })
-                              );
-                            },
-                            child: category(context, 'programming')),
-                        InkWell(
-                            onTap: (){
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context){
-                                    return CategoryPages(categoryName: 'Contracting',);
-                                  })
-                              );
-                            },
-                            child: category(context, 'Contracting')),
-                        InkWell(
-                            onTap: (){
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context){
-                                    return CategoryPages(categoryName: 'Marketing',);
-                                  })
-                              );
-                            },
-                            child: category(context, 'Marketing')),
-                        InkWell(
-                            onTap: (){
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context){
-                                    return CategoryPages(categoryName: 'Accounting',);
-                                  })
-                              );
-                            },
-                            child: category(context, 'Accounting')),
-                        InkWell(
-                            onTap: (){
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context){
-                                    return CategoryPages(categoryName: 'communications',);
-                                  })
-                              );
-                            },
-                            child: category(context, 'Communication')),
-                        SizedBox(width: 80,),
+                        ...categories.map((category) => buildCategoryButton(context, category)),
                       ],
                     ),
                   ),
                 ),
+                SizedBox(height: 30),
                 Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 100),
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance.collection('posts').snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      }
 
-                  padding: const EdgeInsets.only(
-                    left:100.0,
-                    right: 100.0,
-                  ),
-                    child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('posts')
-                        .snapshots(),
-                    builder: (context, snapshots) {
-                      return (snapshots.connectionState ==
-                          ConnectionState.waiting)
-                          ? Center(
-                        child: CircularProgressIndicator(),
-                      )
-                          : GridView.builder(
-                            physics: NeverScrollableScrollPhysics(),
+                      final List<DocumentSnapshot> filteredList = snapshot.data!.docs.where((document) {
+                        final String trainingName = document['trainingName'].toString().toLowerCase();
+                        final String city = document['city'].toString().toLowerCase();
+                        final String cost = document['trainingCost'].toString().toLowerCase();
 
-                                                  shrinkWrap: true,
-                                                  gridDelegate:
-                                                  SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount:3,
+                        final String searchLower = searchQuery.toLowerCase();
+
+                        return trainingName.contains(searchLower) ||
+                            city.contains(searchLower) ||
+                            cost.contains(searchLower);
+                      }).toList();
+
+                      return GridView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
                           crossAxisSpacing: 20.0,
                           mainAxisSpacing: 20.0,
-                           childAspectRatio: 0.88, // Adjust the aspect ratio as needed
-
-                                                  ),
-                                                  itemCount: snapshots.data!.docs.length,
-                                                  itemBuilder: (context, index) {
-                          var data = snapshots.data!.docs[index]
-                              .data() as Map<String, dynamic>;
-                          if (name.isEmpty) {
-                            return trainingID(
-                              image: data['image'] ?? '',
-                              companyName: data['companyName'],
-                              city: data['city'],
-                              street: data['street'],
-                              trainingSpecialization:
-                              data['trainingSpecialization'],
-                              trainingCost: data['trainingCost'],
-                              trainingDescription:
-                              data['trainingDescription'],
-                              startDate: data['startDate'],
-                              endDate: data['endDate'],
-                              category: data['category'],
-                              trainingName: data['trainingName'],
-                              id:data['uId'],
-                              isLiked: data['isLiked'],
-                              isPaid: data['isPaid']??'',
-                              context: context,
-                            );
-                          }
-                          if (data['trainingName']
-                              .toString()
-                              .toLowerCase()
-                              .startsWith(name.toLowerCase())) {
-                            return trainingID(
-                              image: data['image'] ?? '',
-                              companyName: data['companyName'],
-                              city: data['city'],
-                              street: data['street'],
-                              trainingSpecialization:
-                              data['trainingSpecialization'],
-                              trainingCost: data['trainingCost'],
-                              trainingDescription:
-                              data['trainingDescription'],
-                              startDate: data['startDate'],
-                              endDate: data['endDate'],
-                              category: data['category'],
-                              trainingName: data['trainingName'],
-                              id:data['uId'],
-                              isLiked: data['isLiked'],
-                              isPaid: data['isPaid']??'',
-                              context: context,
-                            );
-                          }
-                                                  },
-                                                );
+                          childAspectRatio: 0.88,
+                        ),
+                        itemCount: filteredList.length,
+                        itemBuilder: (context, index) {
+                          var data = filteredList[index].data() as Map<String, dynamic>;
+                          return trainingID(
+                            image: data['image'] ?? '',
+                            companyName: data['companyName'],
+                            city: data['city'],
+                            street: data['street'],
+                            trainingSpecialization: data['trainingSpecialization'],
+                            trainingCost: data['trainingCost'],
+                            trainingDescription: data['trainingDescription'],
+                            startDate: data['startDate'],
+                            endDate: data['endDate'],
+                            category: data['category'],
+                            trainingName: data['trainingName'],
+                            id: data['uId'],
+                            isLiked: data['isLiked'],
+                            isPaid: data['isPaid'] ?? '',
+                            context: context,
+                          );
+                        },
+                      );
                     },
                   ),
                 ),
-                SizedBox(
-                  height: 60,
-                ),
+
+                SizedBox(height: 60),
                 footerPage(context),
               ],
             ),
           ],
         ),
       ),
+    )
+        : Container();
+  }
+
+  Widget buildCategoryButton(BuildContext context, String categoryName) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CategoryPages(categoryName: categoryName)),
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        margin: EdgeInsets.only(right: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Text(
+          categoryName,
+          style: TextStyle(
+            fontFamily: mainFont,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: mainColor,
+          ),
+        ),
+      ),
     );
-
-
   }
 }
 
-
-Widget category (
-    context,
-    name,
-
-    ){
+Widget category(context, name) {
   return Container(
     height: MediaQuery.of(context).size.width * 0.04,
     width: MediaQuery.of(context).size.width * 0.1,
     decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(5)
-    ),
+        color: Colors.white, borderRadius: BorderRadius.circular(5)),
     child: Center(
       child: Text(
         '$name',
@@ -268,8 +246,7 @@ Widget category (
             fontFamily: mainFont,
             fontSize: 12,
             fontWeight: FontWeight.w600,
-            color: mainColor
-        ),
+            color: mainColor),
       ),
     ),
   );

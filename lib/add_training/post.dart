@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:tadrebk/add_training/cubit.dart';
 import 'package:tadrebk/add_training/states.dart';
 import 'package:tadrebk/shared/fonts.dart';
 
+import '../my_trainings/paid_trainings.dart';
 import '../shared/colors.dart';
 import '../shared/header_widget.dart';
 
@@ -27,6 +29,22 @@ class _PostState extends State<Post> {
   var trainingDescriptionController = TextEditingController();
   var startDateController = TextEditingController();
   var endDateController = TextEditingController();
+
+  Future<void> _selectDate(
+      BuildContext context, TextEditingController controller) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      setState(() {
+        controller.text = "${picked.day}/${picked.month}/${picked.year}";
+      });
+    }
+  }
+
   String? category;
   int index = 0;
 
@@ -34,9 +52,17 @@ class _PostState extends State<Post> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<PostCubit, PostStatus>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if(state is CreatePostSuccessState){
+            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>PaidTrainings()), (route) => false);
+          }
+        },
         builder: (context, state) {
-          return Scaffold(
+          final windowWidth = MediaQuery.of(context).size.width;
+          final windowHeight = MediaQuery.of(context).size.height;
+
+          return windowWidth >= 1100 && windowHeight >= 500
+              ? Scaffold(
             body: Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
@@ -48,7 +74,7 @@ class _PostState extends State<Post> {
                     ),
 
                     //
-                    if (state is CreatePostLoadingStates)
+                    if (state is CreatePostLoadingState)
                       LinearProgressIndicator(),
 
                     SizedBox(
@@ -57,14 +83,16 @@ class _PostState extends State<Post> {
                       child: ListView(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(left: 60, top: 10),
+                            padding:
+                            const EdgeInsets.only(left: 60, top: 10),
                             child: Container(
                               width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height * 0.08,
+                              height: MediaQuery.of(context).size.height *
+                                  0.08,
                               child: Row(
                                 children: [
-                                  Text(
-                                    'Add',
+                                  LocaleText(
+                                    'add',
                                     style: TextStyle(
                                       fontSize: 26,
                                       fontWeight: FontWeight.bold,
@@ -74,8 +102,8 @@ class _PostState extends State<Post> {
                                   SizedBox(
                                     width: 6,
                                   ),
-                                  Text(
-                                    'Training',
+                                  LocaleText(
+                                    'training',
                                     style: TextStyle(
                                         fontSize: 26,
                                         fontWeight: FontWeight.bold,
@@ -94,18 +122,19 @@ class _PostState extends State<Post> {
                                   color: Colors.white,
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.only(
                                             left: 40, right: 40, top: 20),
-                                        child: Text(
-                                          'Upload a photo of your Training',
+                                        child: LocaleText(
+                                          'upload_photo',
                                           style: TextStyle(
                                               fontSize: 12,
                                               fontFamily: mainFont,
                                               color: Colors.black54,
-                                              fontWeight: FontWeight.bold),
+                                              fontWeight:
+                                              FontWeight.bold),
                                         ),
                                       ),
                                       Padding(
@@ -118,89 +147,100 @@ class _PostState extends State<Post> {
                                           },
                                           child: Container(
                                             width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
+                                                .size
+                                                .width *
                                                 0.3,
                                             height: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
+                                                .size
+                                                .width *
                                                 0.18,
-                                            clipBehavior:
-                                                Clip.antiAliasWithSaveLayer,
+                                            clipBehavior: Clip
+                                                .antiAliasWithSaveLayer,
                                             decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(20),
-                                              color:
-                                                  Colors.grey.withOpacity(0.1),
+                                              BorderRadius.circular(
+                                                  20),
+                                              color: Colors.grey
+                                                  .withOpacity(0.1),
                                               border: Border.all(
                                                 color: mainColor,
                                                 width: 2,
                                               ),
                                             ),
-                                            child: PostCubit.get(context)
-                                                        .postImage !=
-                                                    null
+                                            child:
+                                            PostCubit.get(context)
+                                                .postImage !=
+                                                null
                                                 ? Stack(
-                                                    alignment:
-                                                        AlignmentDirectional
-                                                            .topEnd,
-                                                    children: [
-                                                      Container(
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.3,
-                                                          height: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width *
-                                                              0.2,
-                                                          child: Image.memory(
-                                                            PostCubit.get(
-                                                                    context)
-                                                                .postImage!,
-                                                            fit: BoxFit.cover,
-                                                          )),
-                                                      IconButton(
-                                                          onPressed: () {
-                                                            PostCubit.get(
-                                                                    context)
-                                                                .removePostImage();
-                                                          },
-                                                          icon: CircleAvatar(
-                                                            backgroundColor:
-                                                                mainColor,
-                                                            child: Icon(
-                                                              Icons.close,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          )),
-                                                    ],
-                                                  )
-                                                : Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
+                                              alignment:
+                                              AlignmentDirectional
+                                                  .topEnd,
+                                              children: [
+                                                Container(
+                                                    width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                        0.3,
+                                                    height: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                        0.2,
+                                                    child: Image
+                                                        .memory(
+                                                      PostCubit.get(
+                                                          context)
+                                                          .postImage!,
+                                                      fit: BoxFit
+                                                          .cover,
+                                                    )),
+                                                IconButton(
+                                                    onPressed:
+                                                        () {
+                                                      PostCubit.get(
+                                                          context)
+                                                          .removePostImage();
+                                                    },
+                                                    icon:
+                                                    CircleAvatar(
+                                                      backgroundColor:
+                                                      mainColor,
+                                                      child:
                                                       Icon(
-                                                        Icons.image,
-                                                        color: Colors.grey,
+                                                        Icons
+                                                            .close,
+                                                        color: Colors
+                                                            .white,
                                                       ),
-                                                      SizedBox(
-                                                        height: 4,
-                                                      ),
-                                                      Text(
-                                                        'Select file',
-                                                        style: TextStyle(
-                                                          fontSize: 12,
-                                                          fontFamily: mainFont,
-                                                          color: Colors.black54,
-                                                        ),
-                                                      ),
-                                                    ],
+                                                    )),
+                                              ],
+                                            )
+                                                : Column(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment
+                                                  .center,
+                                              children: [
+                                                Icon(
+                                                  Icons.image,
+                                                  color: Colors
+                                                      .grey,
+                                                ),
+                                                SizedBox(
+                                                  height: 4,
+                                                ),
+                                                LocaleText(
+                                                  'select_file',
+                                                  style:
+                                                  TextStyle(
+                                                    fontSize:
+                                                    12,
+                                                    fontFamily:
+                                                    mainFont,
+                                                    color: Colors
+                                                        .black54,
                                                   ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -209,16 +249,15 @@ class _PostState extends State<Post> {
                                             left: 40, right: 40, top: 10),
                                         child: SizedBox(
                                           width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
+                                              .size
+                                              .width *
                                               0.3,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.06,
+
                                           child: TextFormField(
-                                            keyboardType: TextInputType.name,
-                                            controller: companyNameController,
+                                            keyboardType:
+                                            TextInputType.name,
+                                            controller:
+                                            companyNameController,
                                             validator: (value) {
                                               if (value == null ||
                                                   value.isEmpty) {
@@ -229,40 +268,50 @@ class _PostState extends State<Post> {
                                               filled: true,
                                               fillColor: Colors.white,
                                               hintText:
-                                                  'Enter your Company Name',
+                                              'Enter your Company Name',
                                               hintStyle: TextStyle(
                                                   color: Colors.grey,
                                                   fontSize: 12),
                                               focusColor: Colors.white,
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              focusedBorder:
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
                                               focusedErrorBorder:
-                                                  OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
                                               disabledBorder:
-                                                  OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              enabledBorder:
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
@@ -277,16 +326,15 @@ class _PostState extends State<Post> {
                                             left: 40, right: 40, top: 10),
                                         child: SizedBox(
                                           width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
+                                              .size
+                                              .width *
                                               0.3,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.06,
+
                                           child: TextFormField(
-                                            keyboardType: TextInputType.name,
-                                            controller: trainingNameController,
+                                            keyboardType:
+                                            TextInputType.name,
+                                            controller:
+                                            trainingNameController,
                                             validator: (value) {
                                               if (value == null ||
                                                   value.isEmpty) {
@@ -296,40 +344,51 @@ class _PostState extends State<Post> {
                                             decoration: InputDecoration(
                                               filled: true,
                                               fillColor: Colors.white,
-                                              hintText: 'Enter Training Name',
+                                              hintText:
+                                              'Enter Training Name',
                                               hintStyle: TextStyle(
                                                   color: Colors.grey,
                                                   fontSize: 12),
                                               focusColor: Colors.white,
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              focusedBorder:
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
                                               focusedErrorBorder:
-                                                  OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
                                               disabledBorder:
-                                                  OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              enabledBorder:
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
@@ -344,15 +403,13 @@ class _PostState extends State<Post> {
                                             left: 40, right: 40, top: 10),
                                         child: SizedBox(
                                           width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
+                                              .size
+                                              .width *
                                               0.3,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.06,
+
                                           child: TextFormField(
-                                            keyboardType: TextInputType.name,
+                                            keyboardType:
+                                            TextInputType.name,
                                             controller: cityController,
                                             validator: (value) {
                                               if (value == null ||
@@ -368,35 +425,45 @@ class _PostState extends State<Post> {
                                                   color: Colors.grey,
                                                   fontSize: 12),
                                               focusColor: Colors.white,
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              focusedBorder:
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
                                               focusedErrorBorder:
-                                                  OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
                                               disabledBorder:
-                                                  OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              enabledBorder:
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
@@ -411,15 +478,13 @@ class _PostState extends State<Post> {
                                             left: 40, right: 40, top: 10),
                                         child: SizedBox(
                                           width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
+                                              .size
+                                              .width *
                                               0.3,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.06,
+
                                           child: TextFormField(
-                                            keyboardType: TextInputType.name,
+                                            keyboardType:
+                                            TextInputType.name,
                                             controller: streetController,
                                             validator: (value) {
                                               if (value == null ||
@@ -435,35 +500,45 @@ class _PostState extends State<Post> {
                                                   color: Colors.grey,
                                                   fontSize: 12),
                                               focusColor: Colors.white,
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              focusedBorder:
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
                                               focusedErrorBorder:
-                                                  OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
                                               disabledBorder:
-                                                  OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              enabledBorder:
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
@@ -478,17 +553,15 @@ class _PostState extends State<Post> {
                                             left: 40, right: 40, top: 10),
                                         child: SizedBox(
                                           width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
+                                              .size
+                                              .width *
                                               0.3,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.06,
+
                                           child: TextFormField(
-                                            keyboardType: TextInputType.name,
+                                            keyboardType:
+                                            TextInputType.name,
                                             controller:
-                                                trainingSpecializationController,
+                                            trainingSpecializationController,
                                             validator: (value) {
                                               if (value == null ||
                                                   value.isEmpty) {
@@ -499,40 +572,50 @@ class _PostState extends State<Post> {
                                               filled: true,
                                               fillColor: Colors.white,
                                               hintText:
-                                                  'Enter Training Specialization',
+                                              'Enter Training Specialization',
                                               hintStyle: TextStyle(
                                                   color: Colors.grey,
                                                   fontSize: 12),
                                               focusColor: Colors.white,
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              focusedBorder:
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
                                               focusedErrorBorder:
-                                                  OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
                                               disabledBorder:
-                                                  OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              enabledBorder:
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
@@ -547,16 +630,15 @@ class _PostState extends State<Post> {
                                             left: 40, right: 40, top: 10),
                                         child: SizedBox(
                                           width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
+                                              .size
+                                              .width *
                                               0.3,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.06,
+
                                           child: TextFormField(
-                                            keyboardType: TextInputType.name,
-                                            controller: trainingCostController,
+                                            keyboardType:
+                                            TextInputType.name,
+                                            controller:
+                                            trainingCostController,
                                             validator: (value) {
                                               if (value == null ||
                                                   value.isEmpty) {
@@ -566,40 +648,51 @@ class _PostState extends State<Post> {
                                             decoration: InputDecoration(
                                               filled: true,
                                               fillColor: Colors.white,
-                                              hintText: 'Enter Training Cost',
+                                              hintText:
+                                              'Enter Training Cost',
                                               hintStyle: TextStyle(
                                                   color: Colors.grey,
                                                   fontSize: 12),
                                               focusColor: Colors.white,
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              focusedBorder:
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
                                               focusedErrorBorder:
-                                                  OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
                                               disabledBorder:
-                                                  OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              enabledBorder:
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
@@ -614,17 +707,18 @@ class _PostState extends State<Post> {
                                             left: 40, right: 40, top: 10),
                                         child: SizedBox(
                                           width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
+                                              .size
+                                              .width *
                                               0.3,
                                           height: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
+                                              .size
+                                              .width *
                                               0.18,
                                           child: TextFormField(
-                                            keyboardType: TextInputType.name,
+                                            keyboardType:
+                                            TextInputType.name,
                                             controller:
-                                                trainingDescriptionController,
+                                            trainingDescriptionController,
                                             maxLines: 20,
                                             validator: (value) {
                                               if (value == null ||
@@ -635,40 +729,51 @@ class _PostState extends State<Post> {
                                             decoration: InputDecoration(
                                               filled: true,
                                               fillColor: Colors.white,
-                                              hintText: 'Training Description',
+                                              hintText:
+                                              'Training Description',
                                               hintStyle: TextStyle(
                                                   color: Colors.grey,
                                                   fontSize: 12),
                                               focusColor: Colors.white,
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              focusedBorder:
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
                                               focusedErrorBorder:
-                                                  OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
                                               disabledBorder:
-                                                  OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
                                                 ),
                                               ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10)),
+                                              enabledBorder:
+                                              OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(
+                                                        10)),
                                                 borderSide: BorderSide(
                                                   color: Colors.grey
                                                       .withOpacity(0.5),
@@ -683,161 +788,184 @@ class _PostState extends State<Post> {
                                             top: 10, left: 40, right: 40),
                                         child: SizedBox(
                                           width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
+                                              .size
+                                              .width *
                                               0.3,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.06,
+
                                           child: Row(
                                             children: [
                                               SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
+                                                width:
+                                                MediaQuery.of(context)
+                                                    .size
+                                                    .width *
                                                     0.14,
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.06,
+
                                                 child: TextFormField(
-                                                  keyboardType:
-                                                      TextInputType.number,
+                                                  readOnly: true,
                                                   controller:
-                                                      startDateController,
+                                                  startDateController,
                                                   validator: (value) {
                                                     if (value == null ||
                                                         value.isEmpty) {
                                                       return 'this field is empty';
                                                     }
                                                   },
-                                                  decoration: InputDecoration(
+                                                  onTap: () => _selectDate(
+                                                      context,
+                                                      startDateController),
+                                                  decoration:
+                                                  InputDecoration(
                                                     filled: true,
-                                                    fillColor: Colors.white,
-                                                    hintText: 'Start Date',
+                                                    fillColor:
+                                                    Colors.white,
+                                                    hintText:
+                                                    'Start Date',
                                                     hintStyle: TextStyle(
-                                                        color: Colors.grey,
+                                                        color:
+                                                        Colors.grey,
                                                         fontSize: 12),
-                                                    focusColor: Colors.white,
+                                                    focusColor:
+                                                    Colors.white,
                                                     focusedBorder:
-                                                        OutlineInputBorder(
+                                                    OutlineInputBorder(
                                                       borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10)),
+                                                      BorderRadius
+                                                          .all(Radius
+                                                          .circular(
+                                                          10)),
                                                       borderSide: BorderSide(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.5),
-                                                      ),
+                                                          color: Colors
+                                                              .grey
+                                                              .withOpacity(
+                                                              0.5)),
                                                     ),
                                                     focusedErrorBorder:
-                                                        OutlineInputBorder(
+                                                    OutlineInputBorder(
                                                       borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10)),
+                                                      BorderRadius
+                                                          .all(Radius
+                                                          .circular(
+                                                          10)),
                                                       borderSide: BorderSide(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.5),
-                                                      ),
+                                                          color: Colors
+                                                              .grey
+                                                              .withOpacity(
+                                                              0.5)),
                                                     ),
                                                     disabledBorder:
-                                                        OutlineInputBorder(
+                                                    OutlineInputBorder(
                                                       borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10)),
+                                                      BorderRadius
+                                                          .all(Radius
+                                                          .circular(
+                                                          10)),
                                                       borderSide: BorderSide(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.5),
-                                                      ),
+                                                          color: Colors
+                                                              .grey
+                                                              .withOpacity(
+                                                              0.5)),
                                                     ),
                                                     enabledBorder:
-                                                        OutlineInputBorder(
+                                                    OutlineInputBorder(
                                                       borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10)),
+                                                      BorderRadius
+                                                          .all(Radius
+                                                          .circular(
+                                                          10)),
                                                       borderSide: BorderSide(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.5),
-                                                      ),
+                                                          color: Colors
+                                                              .grey
+                                                              .withOpacity(
+                                                              0.5)),
                                                     ),
                                                   ),
                                                 ),
                                               ),
                                               Spacer(),
                                               SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
+                                                width:
+                                                MediaQuery.of(context)
+                                                    .size
+                                                    .width *
                                                     0.14,
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.06,
+
                                                 child: TextFormField(
-                                                  keyboardType:
-                                                      TextInputType.number,
-                                                  controller: endDateController,
+                                                  readOnly: true,
+                                                  controller:
+                                                  endDateController,
                                                   validator: (value) {
                                                     if (value == null ||
                                                         value.isEmpty) {
                                                       return 'this field is empty';
                                                     }
                                                   },
-                                                  decoration: InputDecoration(
+                                                  onTap: () => _selectDate(
+                                                      context,
+                                                      endDateController),
+                                                  decoration:
+                                                  InputDecoration(
                                                     filled: true,
-                                                    fillColor: Colors.white,
+                                                    fillColor:
+                                                    Colors.white,
                                                     hintText: 'End Date',
                                                     hintStyle: TextStyle(
-                                                        color: Colors.grey,
+                                                        color:
+                                                        Colors.grey,
                                                         fontSize: 12),
-                                                    focusColor: Colors.white,
+                                                    focusColor:
+                                                    Colors.white,
                                                     focusedBorder:
-                                                        OutlineInputBorder(
+                                                    OutlineInputBorder(
                                                       borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10)),
+                                                      BorderRadius
+                                                          .all(Radius
+                                                          .circular(
+                                                          10)),
                                                       borderSide: BorderSide(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.5),
-                                                      ),
+                                                          color: Colors
+                                                              .grey
+                                                              .withOpacity(
+                                                              0.5)),
                                                     ),
                                                     focusedErrorBorder:
-                                                        OutlineInputBorder(
+                                                    OutlineInputBorder(
                                                       borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10)),
+                                                      BorderRadius
+                                                          .all(Radius
+                                                          .circular(
+                                                          10)),
                                                       borderSide: BorderSide(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.5),
-                                                      ),
+                                                          color: Colors
+                                                              .grey
+                                                              .withOpacity(
+                                                              0.5)),
                                                     ),
                                                     disabledBorder:
-                                                        OutlineInputBorder(
+                                                    OutlineInputBorder(
                                                       borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10)),
+                                                      BorderRadius
+                                                          .all(Radius
+                                                          .circular(
+                                                          10)),
                                                       borderSide: BorderSide(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.5),
-                                                      ),
+                                                          color: Colors
+                                                              .grey
+                                                              .withOpacity(
+                                                              0.5)),
                                                     ),
                                                     enabledBorder:
-                                                        OutlineInputBorder(
+                                                    OutlineInputBorder(
                                                       borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10)),
+                                                      BorderRadius
+                                                          .all(Radius
+                                                          .circular(
+                                                          10)),
                                                       borderSide: BorderSide(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.5),
-                                                      ),
+                                                          color: Colors
+                                                              .grey
+                                                              .withOpacity(
+                                                              0.5)),
                                                     ),
                                                   ),
                                                 ),
@@ -850,10 +978,10 @@ class _PostState extends State<Post> {
                                         height: 10,
                                       ),
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 40),
-                                        child: Text(
-                                          'Choose your category:',
+                                        padding: const EdgeInsets.only(
+                                            left: 40),
+                                        child: LocaleText(
+                                          'choose_category',
                                           style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
@@ -861,252 +989,48 @@ class _PostState extends State<Post> {
                                           ),
                                         ),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 10, left: 40, right: 40),
-                                        child: SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.3,
-                                          child: Wrap(
-                                            children: [
-                                              InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                    index = 0;
-                                                  });
-                                                },
-                                                child: SizedBox(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.1,
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.06,
-                                                  child: Card(
-                                                    color: index == 0
-                                                        ? mainColor
-                                                        : Colors.white,
-                                                    child: Center(
-                                                      child: Text(
-                                                        'Programming',
-                                                        style: TextStyle(
-                                                            color: index == 0
-                                                                ? Colors.white
-                                                                : mainColor,
-                                                            fontFamily:
-                                                                mainFont,
-                                                            fontSize: 10),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                    index = 1;
-                                                  });
-                                                },
-                                                child: SizedBox(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.1,
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.06,
-                                                  child: Card(
-                                                    color: index == 1
-                                                        ? mainColor
-                                                        : Colors.white,
-                                                    child: Center(
-                                                      child: Text(
-                                                        'Contracting',
-                                                        style: TextStyle(
-                                                            color: index == 1
-                                                                ? Colors.white
-                                                                : mainColor,
-                                                            fontFamily:
-                                                                mainFont,
-                                                            fontSize: 10),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                    index = 2;
-                                                  });
-                                                },
-                                                child: SizedBox(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.1,
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.06,
-                                                  child: Card(
-                                                    color: index == 2
-                                                        ? mainColor
-                                                        : Colors.white,
-                                                    child: Center(
-                                                      child: Text(
-                                                        'Marketing',
-                                                        style: TextStyle(
-                                                            color: index == 2
-                                                                ? Colors.white
-                                                                : mainColor,
-                                                            fontFamily:
-                                                                mainFont,
-                                                            fontSize: 10),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                    index = 3;
-                                                  });
-                                                },
-                                                child: SizedBox(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.1,
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.06,
-                                                  child: Card(
-                                                    color: index == 3
-                                                        ? mainColor
-                                                        : Colors.white,
-                                                    child: Center(
-                                                      child: Text(
-                                                        'Accounting',
-                                                        style: TextStyle(
-                                                            color: index == 3
-                                                                ? Colors.white
-                                                                : mainColor,
-                                                            fontFamily:
-                                                                mainFont,
-                                                            fontSize: 10),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                    index = 4;
-                                                  });
-                                                },
-                                                child: SizedBox(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.1,
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.06,
-                                                  child: Card(
-                                                    color: index == 4
-                                                        ? mainColor
-                                                        : Colors.white,
-                                                    child: Center(
-                                                      child: Text(
-                                                        'communications',
-                                                        style: TextStyle(
-                                                            color: index == 4
-                                                                ? Colors.white
-                                                                : mainColor,
-                                                            fontFamily:
-                                                                mainFont,
-                                                            fontSize: 10),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
                                       InkWell(
                                         onTap: () {
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            if (PostCubit.get(context)
-                                                    .postImage ==
-                                                null) {
+                                          if (_formKey.currentState!.validate()) {
+                                            final categories = [
+                                              'Programming',
+                                              'Engineering',
+                                              'Marketing',
+                                              'Accounting',
+                                              'Arts',
+                                              'Business Management',
+                                              'Nursing',
+                                              'Law',
+                                              'Others'
+                                            ];
+
+                                            String selectedCategory = categories[index];
+
+                                            if (PostCubit.get(context).postImage == null) {
                                               PostCubit.get(context).createPost(
-                                                companyName:
-                                                    companyNameController.text,
-                                                category: index == 0
-                                                    ? 'Programming'
-                                                    : index == 1
-                                                        ? 'Contracting'
-                                                        : index == 2
-                                                            ? 'Marketing'
-                                                            : index == 3
-                                                                ? 'Accounting'
-                                                                : 'communications',
-                                                trainingName:
-                                                    trainingNameController.text,
+                                                companyName: companyNameController.text,
+                                                category: selectedCategory,
+                                                trainingName: trainingNameController.text,
                                                 city: cityController.text,
                                                 street: streetController.text,
-                                                trainingSpecialization:
-                                                    trainingSpecializationController
-                                                        .text,
-                                                trainingCost:
-                                                    trainingCostController.text,
-                                                trainingDescription:
-                                                    trainingDescriptionController
-                                                        .text,
-                                                startDate:
-                                                    startDateController.text,
+                                                trainingSpecialization: trainingSpecializationController.text,
+                                                trainingCost: trainingCostController.text,
+                                                trainingDescription: trainingDescriptionController.text,
+                                                startDate: startDateController.text,
                                                 endDate: endDateController.text,
+                                                image: '',
                                               );
                                             } else {
                                               PostCubit.get(context).uploadPost(
-                                                companyName:
-                                                    companyNameController.text,
-                                                category: index == 0
-                                                    ? 'Programming'
-                                                    : index == 1
-                                                        ? 'Contracting'
-                                                        : index == 2
-                                                            ? 'Marketing'
-                                                            : index == 3
-                                                                ? 'Accounting'
-                                                                : 'communications',
-                                                trainingName:
-                                                    trainingNameController.text,
+                                                companyName: companyNameController.text,
+                                                category: selectedCategory,
+                                                trainingName: trainingNameController.text,
                                                 city: cityController.text,
                                                 street: streetController.text,
-                                                trainingSpecialization:
-                                                    trainingSpecializationController
-                                                        .text,
-                                                trainingCost:
-                                                    trainingCostController.text,
-                                                trainingDescription:
-                                                    trainingDescriptionController
-                                                        .text,
-                                                startDate:
-                                                    startDateController.text,
+                                                trainingSpecialization: trainingSpecializationController.text,
+                                                trainingCost: trainingCostController.text,
+                                                trainingDescription: trainingDescriptionController.text,
+                                                startDate: startDateController.text,
                                                 endDate: endDateController.text,
                                                 context: context,
                                               );
@@ -1114,23 +1038,12 @@ class _PostState extends State<Post> {
                                           }
                                         },
                                         child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 40,
-                                              right: 40,
-                                              top: 20,
-                                              bottom: 30),
+                                          padding: const EdgeInsets.only(left: 40, right: 40, top: 20, bottom: 30),
                                           child: Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.3,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.03,
+                                            width: MediaQuery.of(context).size.width * 0.3,
+                                            height: MediaQuery.of(context).size.width * 0.03,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
+                                              borderRadius: BorderRadius.circular(20),
                                               gradient: LinearGradient(
                                                 begin: Alignment.centerLeft,
                                                 end: Alignment.centerRight,
@@ -1141,17 +1054,63 @@ class _PostState extends State<Post> {
                                               ),
                                             ),
                                             child: Center(
-                                              child: Text(
-                                                'Submit',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontFamily: 'Poppins',
-                                                    fontSize: 18),
+                                              child: LocaleText(
+                                                'submit',
+                                                style: TextStyle(color: Colors.white, fontFamily: 'Poppins', fontSize: 18),
                                               ),
                                             ),
                                           ),
                                         ),
                                       ),
+
+// Updated category selection code
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 10, left: 40, right: 40),
+                                        child: SizedBox(
+                                          width: MediaQuery.of(context).size.width * 0.3,
+                                          child: Wrap(
+                                            children: List.generate(9, (index) {
+                                              final categoryNames = [
+                                                'programming',
+                                                'engineering',
+                                                'marketing',
+                                                'accounting',
+                                                'arts',
+                                                'business Management',
+                                                'nursing',
+                                                'law',
+                                                'others'
+                                              ];
+
+                                              return InkWell(
+                                                onTap: () {
+                                                  setState(() {
+                                                    this.index = index;
+                                                  });
+                                                },
+                                                child: SizedBox(
+                                                  width: MediaQuery.of(context).size.width * 0.1,
+                                                  height: MediaQuery.of(context).size.height * 0.06,
+                                                  child: Card(
+                                                    color: this.index == index ? mainColor : Colors.white,
+                                                    child: Center(
+                                                      child: LocaleText(
+                                                        categoryNames[index],
+                                                        style: TextStyle(
+                                                          color: this.index == index ? Colors.white : mainColor,
+                                                          fontFamily: mainFont,
+                                                          fontSize: 10,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            }),
+                                          ),
+                                        ),
+                                      ),
+
                                     ],
                                   ),
                                 ),
@@ -1163,7 +1122,8 @@ class _PostState extends State<Post> {
                     ),
                   ],
                 )),
-          );
+          )
+              : Container();
         });
   }
 }

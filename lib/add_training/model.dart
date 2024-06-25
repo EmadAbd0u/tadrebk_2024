@@ -17,6 +17,8 @@ class PostModel {
  String? category;
  String? isLiked;
  String? companyUid;
+
+ String? paymentUid;
  String? isPaid;
 
 
@@ -37,6 +39,7 @@ class PostModel {
     required this.isLiked,
     required this.companyUid,
     required this.isPaid,
+    required this.paymentUid,
 
   });
 
@@ -57,6 +60,7 @@ class PostModel {
     isLiked = json['isLiked'];
     companyUid = json['companyUid'];
     isPaid = json['isPaid'];
+    paymentUid = json['paymentUid'];
 
 
   }
@@ -79,6 +83,7 @@ class PostModel {
       'isLiked':isLiked,
       'companyUid':companyUid,
       'isPayed':isPaid,
+      'paymentUid':paymentUid,
 
     };
 

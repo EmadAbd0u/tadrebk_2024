@@ -1,25 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:tadrebk/get_trainings/get%20_trainings_page.dart';
 import 'package:tadrebk/shared/colors.dart';
 import 'package:tadrebk/shared/components.dart';
 import 'package:tadrebk/shared/header_widget.dart';
 
-
 class AboutUsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgrounColor,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            HeaderWidget(
-              index: 3,
-            ),
-
-
+            HeaderWidget(index: 3),
             Container(
               decoration: BoxDecoration(
                 boxShadow: [
@@ -32,9 +26,8 @@ class AboutUsScreen extends StatelessWidget {
                 ],
               ),
             ),
-
             Container(
-              height: 300, // تغيير ارتفاع الصورة
+              height: 300,
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/images/A3.jpg'),
@@ -48,8 +41,8 @@ class AboutUsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
-                    child: Text(
-                      'About Us',
+                    child: LocaleText(
+                      'about_us',
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -59,95 +52,70 @@ class AboutUsScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 20),
                   Center(
-                    child: Text(
-                      'Professional Training Solutions',
+                    child: LocaleText(
+                      'an_integrated',
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 25,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: Colors.redAccent,
                       ),
                     ),
                   ),
                   SizedBox(height: 10),
                   Center(
-                    child: Text(
-                      'Providing high-quality training programs for individuals and companies',
-                      textAlign: TextAlign.center,
+                    child: LocaleText(
+                      'we_aim',
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey[700],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 100),
-                  Center(
-                    child: Text(
-                      'Our Features',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: mainColor,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 100),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildFeatureCard(
-                        context,
-                        icon: Icons.group,
-                        title: 'More than 9000 trainees',
-                        subtitle: 'Trained and certified',
-                      ),
-                      _buildFeatureCard(
-                        context,
-                        icon: Icons.business,
-                        title: 'Partnership with top companies',
-                        subtitle: 'In all training fields',
-                      ),
-                      _buildFeatureCard(
-                        context,
-                        icon: Icons.star,
-                        title: 'Positive Course Ratings',
-                        subtitle: 'Good ratings for all courses',
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildFeatureCard(
-                        context,
-                        icon: Icons.school,
-                        title: 'Over 10,000 students trained',
-                        subtitle: 'In various fields',
-                      ),
-                      _buildFeatureCard(
-                        context,
-                        icon: Icons.badge,
-                        title: 'Over 6500 Graduates',
-                        subtitle: 'In all specializations',
-                      ),
-                      _buildFeatureCard(
-                        context,
-                        icon: Icons.star,
-                        title: 'Positive Course Ratings',
-                        subtitle: 'Good ratings for all courses',
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 30),
 
+                      ),
+                      textAlign: TextAlign.center  ,
+
+                    ),
+                  ),
+                  SizedBox(height: 50),
+                  Center(
+                    child: Column(
+                      children: [
+                        Icon(Icons.school, size: 150, color: mainColor),
+                        SizedBox(height: 10),
+                        LocaleText(
+                          'tadrebk',
+                          style: TextStyle(
+                            fontSize: 35,
+                            fontWeight: FontWeight.bold,
+                            color: mainColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 100),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildFeatureBox(
+                        icon: Icons.business,
+                        title: 'for_companies',
+                        description: 'for_companies_description',
+                      ),
+                      _buildFeatureBox(
+                        icon: Icons.person,
+                        title: 'for_individuals',
+                        description: 'for_individuals_description',
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: 50),
                   Center(
                     child: GestureDetector(
                       onTap: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) =>  GetTrainings(),
-                        ));
-
+                          context,
+                          MaterialPageRoute(builder: (context) => GetTrainings()),
+                        );
                       },
                       child: MouseRegion(
                         cursor: SystemMouseCursors.click,
@@ -159,8 +127,8 @@ class AboutUsScreen extends StatelessWidget {
                             color: mainColor,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: Text(
-                            'Explore Trainings',
+                          child: LocaleText(
+                            'explore_trainings',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -178,12 +146,15 @@ class AboutUsScreen extends StatelessWidget {
                     height: 2,
                   ),
                   SizedBox(height: 60),
-                  Text(
-                    'Benefits of your Training :',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                  Center(
+                    child: LocaleText(
+                      'benefits_of_your_training',
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.redAccent,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                   SizedBox(height: 20),
@@ -192,14 +163,44 @@ class AboutUsScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildFeature('A variety of training courses'),
-                        _buildFeature('Customized training programs tailored to individual or company needs'),
-                        _buildFeature('Certified credentials upon successful completion of courses'),
-                        _buildFeature('Free training opportunities and scholarships'),
-                        _buildFeature('Interactive learning experience with practical exercises and challenges'),
-                        _buildFeature('Online platform for communication between trainers, trainees, and companies'),
-                        _buildFeature('Extensive library of educational resources, including ebooks, videos, and articles'),
-                        _buildFeature('Regular reports and statistics on learner performance and course evaluations'),
+
+                        //-------------------------------------------------
+                        SizedBox(height:100 ,),
+
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _buildFeatureBox(
+                              icon: Icons.timer,
+                              title: 'save_time',
+                              description: '',
+                            ),
+                            //-------------------------------------------------
+                            SizedBox(width:20 ,),
+
+                            _buildFeatureBox(
+                              icon: Icons.money,
+                              title: 'save_money',
+                              description: '',
+                            ),
+                            //-------------------------------------------------
+                            SizedBox(width:20 ,),
+
+                            _buildFeatureBox(
+                              icon: Icons.check,
+                              title: 'direct_interaction',
+                              description: '',
+                            ),
+
+
+                          ],
+                        ),
+
+
+
+
+
                       ],
                     ),
                   ),
@@ -218,34 +219,37 @@ class AboutUsScreen extends StatelessWidget {
                           children: [
                             Icon(Icons.visibility, color: mainColor, size: 50),
                             SizedBox(height: 10),
-                            Text(
-                              'Our Vision:',
+                            LocaleText(
+                              'our_message',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 color: mainColor,
                               ),
                             ),
+
                             SizedBox(height: 5),
-                            Text(
-                              'To be a leading specialized platform in physical training and to contribute to the advancement of knowledge and thought through the digitization of training. We provide training solutions in all fields through companies that sponsor our students and elevate the training offered by various companies.',
+                            LocaleText(
+                              'our_message_description',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 16,
-                                color: Colors.black,
+                                color: Colors.grey,
                               ),
                             ),
                           ],
                         ),
                       ),
+                      SizedBox(width: 100),
+
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Icon(Icons.military_tech, color: mainColor, size: 50),
                             SizedBox(height: 10),
-                            Text(
-                              'Our Mission:',
+                            LocaleText(
+                              'our_mission',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -253,12 +257,12 @@ class AboutUsScreen extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: 5),
-                            Text(
-                              'To create an environment characterized by ease and credibility, aiming to enable communication between unified electronic centers that provide value-added services contributing to the development of the training market in Egypt.',
+                            LocaleText(
+                              'our_mission_description',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 16,
-                                color: Colors.black,
+                                color: Colors.grey,
                               ),
                             ),
                           ],
@@ -271,101 +275,68 @@ class AboutUsScreen extends StatelessWidget {
               ),
             ),
             footerPage(context),
-
           ],
         ),
       ),
     );
   }
 
-  void _showPackageDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: mainColor,
-          title: Text(
-            'Welcome to Tadrebk',
-            style: TextStyle(color: Colors.white),
-          ),
-          content: Text(
-            'You are in the right place!',
-            style: TextStyle(color: Colors.white),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text(
-                'Close',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildFeatureCard(BuildContext context, {required IconData icon, String? title, String? subtitle}) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () {
-          _showPackageDialog(context);
-        },
-        child: SizedBox(
-          width: 200,
-          child: Card(
-            elevation: 3,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    icon,
-                    size: 40,
-                    color: mainColor,
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    title!,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  Text(
-                    subtitle!,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[700],
-                    ),
-                  ),
-                ],
-              ),
+  Widget _buildFeatureBox({required IconData icon, required String title, required String description}) {
+    return Container(
+      width: 300,
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        border: Border.all(color: mainColor),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, size: 60, color: Colors.amber),
+          SizedBox(height: 10),
+          LocaleText(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: mainColor,
             ),
           ),
-        ),
+          SizedBox(height: 10),
+          LocaleText(
+            description,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[700],
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildFeature(String text) {
+  Widget _buildFeature(String key) {
+    final Map<String, String> trainingBenefits = {
+      "variety_of_courses": "variety_of_courses",
+      "customized_programs": "customized_programs",
+      "certified_credentials": "certified_credentials",
+      "free_opportunities": "free_opportunities",
+      "interactive_experience": "interactive_experience",
+      "online_platform": "online_platform",
+      "educational_resources": "educational_resources",
+      "performance_reports": "performance_reports",
+    };
+
+    final text = trainingBenefits[key] ?? '';
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(
         children: [
-          Icon(Icons.check, color: mainColor),
+          Icon(Icons.check, color: Colors.amber),
           SizedBox(width: 10),
-          Text(
+          LocaleText(
             text,
             style: TextStyle(fontSize: 16, color: Colors.grey[700]),
           ),
@@ -374,4 +345,3 @@ class AboutUsScreen extends StatelessWidget {
     );
   }
 }
-

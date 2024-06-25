@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:tadrebk/forget_password/code_sends_to_email_to_reset_password.dart';
 import 'package:tadrebk/home_screen/home_page.dart';
 import 'package:tadrebk/login_screen/login.dart';
@@ -21,7 +22,11 @@ class _ForgetPasswordState extends State<ForgetPassword> {
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+
+    final windowWidth = MediaQuery.of(context).size.width;
+    final windowHeight = MediaQuery.of(context).size.height;
+
+    return windowWidth >=1100 && windowHeight >=600 ?  Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -36,7 +41,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                 children: [
                    SizedBox(
                      width: MediaQuery.of(context).size.width*0.3,
-                     height:MediaQuery.of(context).size.height*0.4,
+                     height:MediaQuery.of(context).size.height*0.5,
                      child: Card(
                        color: Colors.white,
                        child: Column(
@@ -44,7 +49,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                          children: [
                            Padding(
                              padding: const EdgeInsets.only(left: 20,right: 20,top: 20,bottom: 20),
-                             child: Text('Forget Your Password ?',
+                             child: LocaleText('forget_password',
 
                                style: TextStyle(
                                    fontFamily: mainFont
@@ -63,7 +68,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                    SizedBox(
                                      height: 10,
                                    ),
-                                   Text('Please enter your email address ',
+                                   LocaleText('enter_email',
                                      style: TextStyle(
                                          fontSize: 12,
                                          fontFamily: mainFont,
@@ -73,46 +78,43 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                    SizedBox(
                                      height: 10,
                                    ),
-                                   SizedBox(
-                                     height: 40,
-                                     child: TextFormField(
-                                       keyboardType: TextInputType.emailAddress,
-                                       controller: TextEditingController(),
-                                       validator: (value) {
-                                         if (value == null || value.isEmpty) {
-                                           return 'this field is empty';
-                                         }
-                                       },
-                                       decoration: InputDecoration(
-                                         filled: true,
-                                         fillColor: Colors.transparent,
-                                         hintText: 'Email address',
+                                   TextFormField(
+                                     keyboardType: TextInputType.emailAddress,
+                                     controller: TextEditingController(),
+                                     validator: (value) {
+                                       if (value == null || value.isEmpty) {
+                                         return 'this field is empty';
+                                       }
+                                     },
+                                     decoration: InputDecoration(
+                                       filled: true,
+                                       fillColor: Colors.transparent,
+                                       hintText: 'Email address',
 
-                                         hintStyle: TextStyle(color: Colors.grey,fontSize: 14),
-                                         focusColor: Colors.white,
-                                         focusedBorder: OutlineInputBorder(
+                                       hintStyle: TextStyle(color: Colors.grey,fontSize: 14),
+                                       focusColor: Colors.white,
+                                       focusedBorder: OutlineInputBorder(
 
-                                           borderSide: BorderSide(
-                                             color: Colors.grey,
-                                           ),
+                                         borderSide: BorderSide(
+                                           color: Colors.grey,
                                          ),
-                                         focusedErrorBorder: OutlineInputBorder(
+                                       ),
+                                       focusedErrorBorder: OutlineInputBorder(
 
-                                           borderSide: BorderSide(
-                                             color:Colors.grey,
-                                           ),
+                                         borderSide: BorderSide(
+                                           color:Colors.grey,
                                          ),
-                                         disabledBorder: OutlineInputBorder(
+                                       ),
+                                       disabledBorder: OutlineInputBorder(
 
-                                           borderSide: BorderSide(
-                                             color: Colors.grey,
-                                           ),
+                                         borderSide: BorderSide(
+                                           color: Colors.grey,
                                          ),
-                                         enabledBorder: OutlineInputBorder(
+                                       ),
+                                       enabledBorder: OutlineInputBorder(
 
-                                           borderSide: BorderSide(
-                                             color: Colors.grey,
-                                           ),
+                                         borderSide: BorderSide(
+                                           color: Colors.grey,
                                          ),
                                        ),
                                      ),
@@ -162,8 +164,8 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                      ),
 
                                      child: Center(
-                                       child: Text(
-                                         'Cancel',
+                                       child: LocaleText(
+                                         'cancel',
                                          style: TextStyle(
                                            fontFamily: mainFont,
                                            fontSize: 16
@@ -197,7 +199,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                      ),
 
                                      child: Center(
-                                       child: Text(
+                                       child: LocaleText(
                                          'continue',
                                          style: TextStyle(
                                            fontFamily: mainFont,
@@ -228,6 +230,6 @@ class _ForgetPasswordState extends State<ForgetPassword> {
           ],
         ),
       ),
-    );
+    ) : Container();
   }
 }

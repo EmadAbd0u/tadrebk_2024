@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:tadrebk/home_screen/home_page.dart';
 import 'package:tadrebk/payment_page/payment.dart';
@@ -40,8 +42,11 @@ class _MyTrainingsState extends State<MyTrainings> {
         var street = model?.street;
         var isPerson = model?.isPerson;
 
+        final windowWidth = MediaQuery.of(context).size.width;
+        final windowHeight = MediaQuery.of(context).size.height;
 
-        return  Scaffold(
+
+        return  windowWidth >=1100 && windowHeight >=600 ? Scaffold(
           body: SingleChildScrollView(
             child: Column(
               children: [
@@ -56,8 +61,8 @@ class _MyTrainingsState extends State<MyTrainings> {
                     padding: const EdgeInsets.only(left: 200, right: 100),
                     child:Row(
                       children: [
-                        Text(
-                          'My',
+                        LocaleText(
+                          'my',
                           style: TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.bold,
@@ -67,8 +72,8 @@ class _MyTrainingsState extends State<MyTrainings> {
                         SizedBox(
                           width: 6,
                         ),
-                        Text(
-                          'Trainings',
+                        LocaleText(
+                          'my_training',
                           style: TextStyle(
                               fontSize: 26,
                               fontWeight: FontWeight.bold,
@@ -94,6 +99,8 @@ class _MyTrainingsState extends State<MyTrainings> {
                     child: StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection('posts')
+                          .where('isPayed', isEqualTo: "true")
+                          .where('paymentUid', isEqualTo: FirebaseAuth.instance.currentUser?.uid)
                           .snapshots(),
                       builder: (context, snapshots) {
                         return (snapshots.connectionState ==
@@ -118,7 +125,7 @@ class _MyTrainingsState extends State<MyTrainings> {
                             var data = snapshots.data!.docs[index]
                                 .data() as Map<String, dynamic>;
 
-                            return data['companyUid'] == 'uId' ? trainingID(
+                            return trainingID(
                               image: data['image'] ?? '',
                               companyName: data['companyName'],
                               city: data['city'],
@@ -136,7 +143,7 @@ class _MyTrainingsState extends State<MyTrainings> {
                               isLiked: data['isLiked'],
                               isPaid: data['isPaid']??'',
                               context: context,
-                            ): Container();
+                            );
 
                           },
                         );
@@ -144,12 +151,11 @@ class _MyTrainingsState extends State<MyTrainings> {
                     ),
                   ),
                 ),
-
                 footerPage(context),
               ],
             ),
           ),
-        );
+        ) : Container();
       },
     );
   }

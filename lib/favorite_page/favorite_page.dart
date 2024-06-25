@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:tadrebk/home_screen/home_page.dart';
 import 'package:tadrebk/profile/cubit.dart';
 import 'package:tadrebk/profile/states.dart';
@@ -37,8 +39,10 @@ class _FavoriteState extends State<Favorite> {
         var street = model?.street;
         var isPerson = model?.isPerson;
 
+        final windowWidth = MediaQuery.of(context).size.width;
+        final windowHeight = MediaQuery.of(context).size.height;
 
-        return  Scaffold(
+        return windowWidth >=1100 && windowHeight >=600 ?   Scaffold(
           body: SingleChildScrollView(
             child: Column(
               children: [
@@ -55,7 +59,7 @@ class _FavoriteState extends State<Favorite> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        LocaleText(
                           'Favorite',
                           style: TextStyle(
                               fontSize: 26,
@@ -83,6 +87,8 @@ class _FavoriteState extends State<Favorite> {
                     child: StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection('posts')
+                          .where('isLiked', isEqualTo: 'true')
+                          .where('paymentUid',isEqualTo: FirebaseAuth.instance.currentUser?.uid)
                           .snapshots(),
                       builder: (context, snapshots) {
                         return (snapshots.connectionState ==
@@ -137,7 +143,7 @@ class _FavoriteState extends State<Favorite> {
               ],
             ),
           ),
-        );
+        ):Container();
       },
     );
   }

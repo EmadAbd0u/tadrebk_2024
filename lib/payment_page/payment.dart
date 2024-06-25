@@ -1,9 +1,16 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_locales/flutter_locales.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:tadrebk/add_training/cubit.dart';
+import 'package:tadrebk/profile/cubit.dart';
+import 'package:tadrebk/shared/cach_helper.dart';
 import 'package:tadrebk/shared/components.dart';
+import 'package:tadrebk/shared/test_payment.dart';
+import 'package:tadrebk/training_details/training_details.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../shared/colors.dart';
 import '../shared/fonts.dart';
@@ -24,7 +31,8 @@ class Payment extends StatefulWidget {
   final String isLiked;
   final String isPaid;
 
-  const Payment({super.key,
+  const Payment({
+    Key? key,
     required this.trainingDescription,
     required this.companyName,
     required this.trainingName,
@@ -37,35 +45,105 @@ class Payment extends StatefulWidget {
     required this.category,
     required this.image,
     required this.id,
-    required this.isLiked,
     required this.isPaid,
-  });
+    required this.isLiked,
+  }) : super(key: key);
 
   @override
   State<Payment> createState() => _PaymentState();
 }
 
 class _PaymentState extends State<Payment> {
-
-
   final _formKey = GlobalKey<FormState>();
+  bool isPaid = false;
+
+  Future<void> _payVisa(String amount) async {
+    try {
+      String paymentKey = await PaymobManager().getPaymentKey(int.parse(amount), "EGP");
+      await launchUrl(
+        Uri.parse("https://accept.paymob.com/api/acceptance/iframes/852141?payment_token=$paymentKey"),
+      );
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  void checkPaymentStatus() async {
+    bool paid = await cachHelper.getData(key: 'isPaid') ?? false;
+    setState(() {
+      isPaid = paid;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    checkPaymentStatus();
+  }
+
+  void _storePaymentDetails() async {
+    if (isPaid) {
+      var userModel = ProfileCubit.get(context).userModel;
+      var paymentId = FirebaseFirestore.instance.collection('payments').doc().id;
+
+      await FirebaseFirestore.instance.collection('payments').doc(paymentId).set({
+        'paymentId': paymentId,
+        'userId': FirebaseAuth.instance.currentUser?.uid,
+        'firstName': userModel?.firstName,
+        'lastName': userModel?.lastName,
+        'email': userModel?.email,
+        'phoneNumber': userModel?.phoneNumber,
+        'city': userModel?.city,
+        'street': userModel?.street,
+        'trainingId': widget.id,
+        'trainingName': widget.trainingName,
+        'amount': widget.trainingCost,
+        'paymentDate': DateTime.now(),
+      });
+
+      // Navigate to TrainingDetails screen after successful payment
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TrainingDetails(
+            description: widget.trainingDescription,
+            companyName: widget.companyName,
+            trainingName: widget.trainingName,
+            specialization: widget.trainingSpecialization,
+            cost: widget.trainingCost,
+            startDate: widget.startDate,
+            endDate: widget.endDate,
+            city: widget.city,
+            street: widget.street,
+            category: widget.category,
+            image: widget.image,
+            id: widget.id,
+            isPaid: 'true',
+            isLiked: widget.isLiked,
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Row(
         children: [
-          Text('paying off',
-
+          Icon(Icons.account_balance_wallet),
+          SizedBox(width: 8),
+          LocaleText(
+            'paying_off',
             style: TextStyle(
-                fontFamily: mainFont,
-                fontSize: 16,
-                fontWeight: FontWeight.bold
+              fontFamily: mainFont,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
           ),
           Spacer(),
           InkWell(
-            onTap: (){
+            onTap: () {
               Navigator.of(context).pop();
             },
             child: Icon(
@@ -75,384 +153,101 @@ class _PaymentState extends State<Payment> {
           )
         ],
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 30,
-          ),
-          Text('payment method',
-
-            style: TextStyle(
-                fontFamily: mainFont
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 20),
+            Center(
+              child: Text(
+                '${widget.trainingCost} EGP',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-
-          ),
-          SizedBox(
-            height: 14,
-          ),
-          Row(
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width*0.14,
-                height: MediaQuery.of(context).size.height*0.06,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: mainColor,
-                  ),
-                ),
-
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text('Card payment',
-
-                      style: TextStyle(
-                          fontFamily: mainFont,
-                          fontSize: 12
-                      ),
-                    ),
-                    Icon(
-                      Icons.payment,
-                      color: mainColor,
-                      size: 16,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width*0.14,
-                height: MediaQuery.of(context).size.height*0.06,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.grey,
-                  ),
-                ),
-
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text('pay cash',
-
-                      style: TextStyle(
-                          fontFamily: mainFont,
-                          fontSize: 12
-                      ),
-                    ),
-                    Icon(
-                      Icons.money,
-                      color: Colors.lightGreen,
-                      size: 16,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          SizedBox(
-            height: 40,
-          ),
-
-          Form(
-            key: _formKey,
-            child: Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                border: Border.all(
-                    color: mainColor
-
-                ),
-              ),
+            SizedBox(height: 20),
+            Center(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('card number',
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontFamily: mainFont,
-                            color: mainColor
+                  InkWell(
+                    onTap: () async {
+                      await _payVisa(widget.trainingCost);
+                      PostCubit.get(context).updatePost(
+                        companyName: widget.companyName,
+                        city: widget.city,
+                        street: widget.street,
+                        trainingSpecialization: widget.trainingSpecialization,
+                        trainingCost: widget.trainingCost,
+                        trainingDescription: widget.trainingDescription,
+                        startDate: widget.startDate,
+                        endDate: widget.endDate,
+                        trainingName: widget.trainingName,
+                        category: widget.category,
+                        id: widget.id,
+                        isLiked: widget.isLiked,
+                        isPaid: 'true',
+                        image: widget.image,
+                      );
+                      await cachHelper.saveData(key: 'isPaid', value: true);
+                      Navigator.pop(context);
+                      showToast(
+                        msg: 'Paid Successfully with Visa',
+                        state: ToastStates.SUCCESS,
+                      );
+                      setState(() {
+                        isPaid = true;
+                      });
+
+                      // Store payment details in Firestore
+                      _storePaymentDetails();
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [HexColor('#1B3358'), mainColor],
                         ),
                       ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      SizedBox(
-                        height: 34,
-                        child: TextFormField(
-                          keyboardType: TextInputType.emailAddress,
-                          controller: TextEditingController(),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'this field is empty';
-                            }
-                          },
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.transparent,
-                            hintText: '8976 5467 xx87 0098',
-
-                            hintStyle: TextStyle(color: Colors.grey,fontSize: 14),
-                            focusColor: Colors.white,
-                            focusedBorder: OutlineInputBorder(
-
-                              borderSide: BorderSide(
-                                color: mainColor,
-                              ),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-
-                              borderSide: BorderSide(
-                                color:mainColor,
-                              ),
-                            ),
-                            disabledBorder: OutlineInputBorder(
-
-                              borderSide: BorderSide(
-                                color: mainColor,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-
-                              borderSide: BorderSide(
-                                color: mainColor,
-                              ),
-                            ),
-                            suffixIcon: Icon(Icons.payment,color: mainColor,size: 16,),
+                      child: Center(
+                        child: Text(
+                          'Pay with Visa',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Poppins',
+                            fontSize: 18,
                           ),
                         ),
                       ),
-
-                    ],
-                  ),
-
-                  SizedBox(
-                    height: 20,
-                  ),
-
-
-
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width*0.24,
-                    height: MediaQuery.of(context).size.height*0.1,
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width*0.11,
-
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('cvv',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontFamily: mainFont,
-                                    color: mainColor
-                                ),
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              SizedBox(
-                                height: 34,
-                                child: TextFormField(
-                                  keyboardType: TextInputType.emailAddress,
-                                  controller: TextEditingController(),
-                                  obscureText: true,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'this field is empty';
-                                    }
-                                  },
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Colors.transparent,
-                                    hintText: '* * *',
-
-                                    hintStyle: TextStyle(color: Colors.grey,fontSize: 14),
-                                    focusColor: Colors.white,
-                                    focusedBorder: OutlineInputBorder(
-
-                                      borderSide: BorderSide(
-                                        color: mainColor,
-                                      ),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-
-                                      borderSide: BorderSide(
-                                        color:mainColor,
-                                      ),
-                                    ),
-                                    disabledBorder: OutlineInputBorder(
-
-                                      borderSide: BorderSide(
-                                        color: mainColor,
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-
-                                      borderSide: BorderSide(
-                                        color: mainColor,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width*0.11,
-
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Expiry Date',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontFamily: mainFont,
-                                    color: mainColor
-                                ),
-                              ),
-                              SizedBox(
-                                height: 4,
-                              ),
-                              SizedBox(
-                                height: 34,
-                                child: TextFormField(
-                                  keyboardType: TextInputType.emailAddress,
-                                  controller: TextEditingController(),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'this field is empty';
-                                    }
-                                  },
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Colors.transparent,
-                                    hintText: '12/2026',
-
-                                    hintStyle: TextStyle(color: Colors.grey,fontSize: 14),
-                                    focusColor: Colors.white,
-                                    focusedBorder: OutlineInputBorder(
-
-                                      borderSide: BorderSide(
-                                        color: mainColor,
-                                      ),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-
-                                      borderSide: BorderSide(
-                                        color:mainColor,
-                                      ),
-                                    ),
-                                    disabledBorder: OutlineInputBorder(
-
-                                      borderSide: BorderSide(
-                                        color: mainColor,
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-
-                                      borderSide: BorderSide(
-                                        color: mainColor,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-                            ],
-                          ),
-                        ),
-                      ],
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-
-          SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-
-                    top: 30
-                ),
-                child: InkWell(
-                  onTap: (){
-                    if (_formKey.currentState!.validate()) {
-
-                      PostCubit.get(context).updatePost(
-                          companyName: widget.companyName,
-                          city: widget.city,
-                          street: widget.street,
-                          trainingSpecialization: widget.trainingSpecialization,
-                          trainingCost: widget.trainingCost,
-                          trainingDescription: widget.trainingDescription,
-                          startDate: widget.startDate,
-                          endDate: widget.endDate,
-                          trainingName: widget.trainingName,
-                          category: widget.category,
-                          id: widget.id,
-                        isLiked:widget.isLiked ,
-                        isPaid: 'true',
-                        image: widget.image
-                      );
-
-                      Navigator.pop(context);
-                      showToast(msg: 'Paid Successfully', state:ToastStates.SUCCESS );
-
-                    }
-
-
-
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width*0.2,
-                    height: MediaQuery.of(context).size.width*0.03,
-
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      gradient: LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [HexColor('#1B3358'), mainColor],
+            SizedBox(height: 20),
+            isPaid
+                ? Center(
+                    child: Text(
+                      'Payment confirmed',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
                       ),
                     ),
-                    child: Center(
-                      child: Text('Pay now',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'Poppins',
-                            fontSize: 18
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
+                  )
+                : SizedBox.shrink(),
+          ],
+        ),
       ),
-
     );
   }
 }
