@@ -993,7 +993,8 @@ class _PostState extends State<Post> {
                                         onTap: () {
                                           if (_formKey.currentState!.validate()) {
                                             final categories = [
-                                              'Programming',
+
+                                              'programming',
                                               'Engineering',
                                               'Marketing',
                                               'Accounting',
@@ -1072,14 +1073,14 @@ class _PostState extends State<Post> {
                                             children: List.generate(9, (index) {
                                               final categoryNames = [
                                                 'programming',
-                                                'engineering',
-                                                'marketing',
-                                                'accounting',
-                                                'arts',
-                                                'business Management',
-                                                'nursing',
-                                                'law',
-                                                'others'
+                                                'Engineering',
+                                                'Marketing',
+                                                'Accounting',
+                                                'Arts',
+                                                'Business Management',
+                                                'Nursing',
+                                                'Law',
+                                                'Others'
                                               ];
 
                                               return InkWell(

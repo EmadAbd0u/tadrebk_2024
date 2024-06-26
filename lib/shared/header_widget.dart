@@ -131,38 +131,45 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                               int BusinessManagement = 0;
                               int Nursing = 0;
                               int Law = 0;
-                              int others = 0;
+                              int Others = 0;
 
+                              try {
+                                final courseCounts = await PostCubit.get(context).countCoursesByCategory();
 
-                              PostCubit.get(context)
-                                  .countCoursesByCategory()
-                                  .then((courseCounts) {
                                 courseCounts.forEach((category, count) {
-                                  print(
-                                      'عدد الكورسات في فئة $category: $count');
+                                  print('عدد الكورسات في فئة $category: $count');
 
-                                  if (category == 'Programming') {
-                                    Programming = count;
-                                  } else if (category == 'Engineering') {
-                                    Engineering = count;
-                                  } else if (category == 'Marketing') {
-                                    Marketing = count;
-                                  } else if (category == 'Accounting') {
-                                    Accounting = count;
-                                  } else if (category == 'communications') {
-                                    communications = count;
-                                  } else if (category == 'Arts') {
-                                    Arts = count;
-                                  } else if (category ==
-                                      'Business Management') {
-                                    BusinessManagement = count;
-                                  } else if (category == 'Nursing') {
-                                    Nursing = count;
-                                    if (category == 'Law') {
+                                  switch (category) {
+                                    case 'Programming':
+                                      Programming = count;
+                                      break;
+                                    case 'Engineering':
+                                      Engineering = count;
+                                      break;
+                                    case 'Marketing':
+                                      Marketing = count;
+                                      break;
+                                    case 'Accounting':
+                                      Accounting = count;
+                                      break;
+                                    case 'communications':
+                                      communications = count;
+                                      break;
+                                    case 'Arts':
+                                      Arts = count;
+                                      break;
+                                    case 'Business Management':
+                                      BusinessManagement = count;
+                                      break;
+                                    case 'Nursing':
+                                      Nursing = count;
+                                      break;
+                                    case 'Law':
                                       Law = count;
-                                    } else if (category == 'others') {
-                                      others = count;
-                                    }
+                                      break;
+                                    case 'Others':
+                                      Others = count;
+                                      break;
                                   }
                                 });
 
@@ -179,28 +186,28 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                       BusinessManagement: BusinessManagement,
                                       Nursing: Nursing,
                                       Law: Law,
-                                      others: others,
-
+                                      Others: Others,
                                     ),
                                   ),
                                 );
-                              });
+                              } catch (error) {
+                                print('Error fetching course counts: $error');
+                                // يمكنك إضافة إشعار للمستخدم هنا
+                              }
                             },
                             child: LocaleText(
                               'trainings',
                               style: TextStyle(
                                 fontSize: widget.index == 1 ? 24 : 18,
-                                color: widget.index == 1
-                                    ? mainColor
-                                    : mainColor.withOpacity(0.5),
+                                color: widget.index == 1 ? mainColor : mainColor.withOpacity(0.5),
                                 fontFamily: "Poppins",
-                                fontWeight: widget.index == 1
-                                    ? FontWeight.bold
-                                    : FontWeight.w500,
+                                fontWeight: widget.index == 1 ? FontWeight.bold : FontWeight.w500,
                               ),
                             ),
                           ),
                         ),
+
+
                         Expanded(
                           child: InkWell(
                             onTap: () {

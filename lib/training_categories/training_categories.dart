@@ -22,7 +22,7 @@ class TrainingCategories extends StatefulWidget {
   final int Arts;
   final int BusinessManagement;
   final int Nursing;
-  final int others;
+  final int Others;
 
 
   TrainingCategories({
@@ -35,7 +35,7 @@ class TrainingCategories extends StatefulWidget {
     required this.BusinessManagement,
     required this.Nursing,
     required this.Law,
-    required this.others,
+    required this.Others,
 
 
   });
@@ -108,7 +108,7 @@ class _TrainingCategoriesState extends State<TrainingCategories> {
                           child: category(
                             context,
                             'assets/images/img_24.png',
-                            'Programming (${widget.Programming})',
+                            'Programming (${widget.Programming})',///Programming -- Engineering -- Law -- Others
                           ),
                         ),
                         InkWell(
@@ -244,7 +244,7 @@ class _TrainingCategoriesState extends State<TrainingCategories> {
                           child: category(
                             context,
                             'assets/images/img_43.jpg',
-                            'Others (${widget.others})',
+                            'Others (${widget.Others})',
                           ),
                         ),
 
@@ -282,17 +282,12 @@ class _TrainingCategoriesState extends State<TrainingCategories> {
                   height: 20,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(
-                    left: 100.0,
-                    right: 100.0,
-                  ),
+                  padding: const EdgeInsets.only(left: 100.0, right: 100.0),
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance.collection('posts').snapshots(),
                     builder: (context, snapshots) {
                       return (snapshots.connectionState == ConnectionState.waiting)
-                          ? Center(
-                        child: CircularProgressIndicator(),
-                      )
+                          ? Center(child: CircularProgressIndicator())
                           : GridView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
@@ -302,7 +297,7 @@ class _TrainingCategoriesState extends State<TrainingCategories> {
                           mainAxisSpacing: 20.0,
                           childAspectRatio: 0.88,
                         ),
-                        itemCount: 3,
+                        itemCount: snapshots.data?.docs.length ?? 0, // تأكد من استخدام الطول الفعلي للقائمة
                         itemBuilder: (context, index) {
                           var data = snapshots.data!.docs[index].data() as Map<String, dynamic>;
                           if (name.isEmpty) {
@@ -343,11 +338,13 @@ class _TrainingCategoriesState extends State<TrainingCategories> {
                               context: context,
                             );
                           }
+                          return Container(); // أضف return افتراضي لتجنب الأخطاء المحتملة
                         },
                       );
                     },
                   ),
                 ),
+
                 SizedBox(
                   height: 40,
                 ),

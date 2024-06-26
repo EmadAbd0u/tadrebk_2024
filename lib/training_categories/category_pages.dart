@@ -93,7 +93,6 @@ class _CategoryPagesState extends State<CategoryPages> {
                 ),
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  color: Colors.grey, // اختر لونًا مناسبًا
                   child: Padding(
                     padding: const EdgeInsets.only(
                         left: 100.0, right: 100.0, top: 20, bottom: 20),
